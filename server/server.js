@@ -316,6 +316,8 @@ pool.connect()
 
     setupNdviTable();
 
+    setupCoreTables();
+
 })
 
 .catch(err => {
@@ -463,6 +465,70 @@ async function setupNdviTable(){
 //
 // Status/Crop_Age/Harvest_Status are derived live from
 // Planting_Date and Harvest_Due every time parcels are
+
+// ======================================
+// GROWERS + PARCELS TABLES
+//
+// Neither table had a CREATE statement anywhere in the
+// original codebase — they were created by hand in the
+// original local database, so their exact DDL was never
+// captured in source. This recreates their shape from how
+// the rest of server.js actually reads/writes them
+// (POST /growers, POST/PUT /addParcel, /parcel/:id), so a
+// brand-new deploy (e.g. a fresh Render Postgres) isn't
+// stuck with no schema at all. If your original database
+// had extra columns beyond what's used here, add them
+// manually — this only guarantees the columns this app
+// depends on.
+// ======================================
+
+async function setupCoreTables(){
+
+    try{
+
+        await pool.query(`
+
+            CREATE EXTENSION IF NOT EXISTS postgis;
+
+            CREATE TABLE IF NOT EXISTS growers (
+                grower_id SERIAL PRIMARY KEY,
+                grower_name TEXT,
+                phone TEXT,
+                village TEXT
+            );
+
+            CREATE TABLE IF NOT EXISTS parcels (
+                "Parcel_ID" TEXT PRIMARY KEY,
+                "Grower_ID" TEXT,
+                "Variety" TEXT,
+                "Status" TEXT,
+                "Area_Ha" NUMERIC,
+                "Planting_Date" DATE,
+                "Harvest_Due" DATE,
+                "Ratoon_Cycle" INTEGER,
+                "Yield_t_ha" NUMERIC,
+                "Estimated_Tonnage" NUMERIC,
+                geometry GEOMETRY(Polygon, 4326)
+            );
+
+            ALTER TABLE parcels ADD COLUMN IF NOT EXISTS "Land_Surveyed" BOOLEAN DEFAULT FALSE;
+            ALTER TABLE parcels ADD COLUMN IF NOT EXISTS "Survey_Date" DATE;
+            ALTER TABLE parcels ADD COLUMN IF NOT EXISTS "Survey_Notes" TEXT;
+            ALTER TABLE parcels ADD COLUMN IF NOT EXISTS "Boundary_Source" TEXT;
+
+        `);
+
+        console.log("✅ Growers/Parcels tables ready");
+
+    }
+    catch(err){
+
+        console.error("Growers/Parcels table setup failed:", err.message);
+
+    }
+
+}
+
 // read, rather than relying on a manually-set value that
 // goes stale. Thresholds:
 //   - "Planned"   : planting date is in the future
