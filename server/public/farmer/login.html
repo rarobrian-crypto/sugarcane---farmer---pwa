@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"/>
+<title>Login — Sugarcane GIS</title>
+<meta name="theme-color" content="#1B5E20"/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="/icons/icon-192.png"/>
+<link rel="stylesheet" href="/farmer/css/app.css"/>
+</head>
+<body>
+<div id="app">
+  <div class="login-hero">
+    <div class="leaf">🌱</div>
+    <h1>Sugarcane GIS</h1>
+    <p>YOUR FARM, YOUR FOCUS</p>
+  </div>
+  <div class="login-body">
+    <div class="field">
+      <label>Email or Phone Number</label>
+      <input id="identifier" type="text" placeholder="e.g. 0712 345678"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="password" type="password" placeholder="••••••••"/>
+    </div>
+    <button class="btn btn-primary" onclick="doLogin()">Login</button>
+    <p class="small center-text mt-14"><a href="#" onclick="alert('Contact your plantation manager to reset your password.')">Forgot Password?</a></p>
+  </div>
+  <div class="login-footer">
+    New here? Contact your plantation manager
+  </div>
+</div>
+<script>
+async function doLogin(){
+  const identifier = document.getElementById('identifier').value.trim();
+  const password = document.getElementById('password').value;
+  if(!identifier || !password){
+    alert('Enter your phone/email and password.');
+    return;
+  }
+  try{
+    const res = await fetch('/farmer/login', {
+      method:'POST',
+      credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ identifier, password })
+    });
+    const data = await res.json();
+    if(data.success){
+      location.href = '/farmer/index.html';
+    } else {
+      alert(data.error || 'Login failed.');
+    }
+  } catch(e){
+    // No backend reachable yet (e.g. previewing the UI) — drop into the
+    // app in demo mode so the screens can still be reviewed.
+    location.href = '/farmer/index.html';
+  }
+}
+</script>
+</body>
+</html>

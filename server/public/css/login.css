@@ -1,0 +1,694 @@
+/*======================================================
+LOGIN PAGE
+======================================================*/
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+
+    margin:0;
+
+    font-family:'Segoe UI', Arial, sans-serif;
+
+}
+
+.login-bg{
+
+    position:relative;
+
+    min-height:100vh;
+
+    background:url('../images/sugarcane-banner.jpg') center/cover no-repeat;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.login-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:linear-gradient(
+        120deg,
+        rgba(5,20,15,.92) 0%,
+        rgba(8,30,22,.75) 45%,
+        rgba(10,40,30,.35) 100%
+    );
+
+}
+
+.login-main{
+
+    position:relative;
+
+    z-index:1;
+
+    flex:1;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:40px;
+
+    padding:50px 60px;
+
+    flex-wrap:wrap;
+
+}
+
+/*======================================================
+LEFT SIDE
+======================================================*/
+
+.login-left{
+
+    flex:1;
+
+    min-width:320px;
+
+    max-width:720px;
+
+    color:#fff;
+
+}
+
+.brand-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    margin-bottom:28px;
+
+}
+
+.brand-logo{
+
+    width:56px;
+
+    height:56px;
+
+    object-fit:contain;
+
+    background:#fff;
+
+    border-radius:10px;
+
+    padding:4px;
+
+}
+
+.login-left h1{
+
+    margin:0;
+
+    font-size:28px;
+
+    letter-spacing:1px;
+
+}
+
+.login-left h1 span{
+
+    color:#66BB6A;
+
+}
+
+.brand-subtitle{
+
+    margin:2px 0 0 0;
+
+    font-size:12px;
+
+    letter-spacing:2px;
+
+    color:#B9E4C9;
+
+}
+
+.portal-note{
+
+    margin-bottom:24px;
+
+}
+
+.portal-note-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#66BB6A;
+
+    font-weight:700;
+
+    font-size:14px;
+
+    letter-spacing:1px;
+
+    margin-bottom:8px;
+
+}
+
+.portal-note p{
+
+    margin:0;
+
+    font-size:14px;
+
+    color:#D8E8DE;
+
+    max-width:460px;
+
+}
+
+.dept-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3, 1fr);
+
+    gap:16px;
+
+}
+
+.dept-card{
+
+    background:rgba(255,255,255,.06);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:12px;
+
+    padding:18px;
+
+    cursor:pointer;
+
+    transition:background .15s, transform .15s;
+
+    position:relative;
+
+}
+
+.dept-card:hover{
+
+    background:rgba(255,255,255,.12);
+
+    transform:translateY(-2px);
+
+}
+
+.dept-card.selected{
+
+    border-color:#66BB6A;
+
+    background:rgba(102,187,106,.15);
+
+}
+
+.dept-icon{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:8px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:18px;
+
+    margin-bottom:12px;
+
+}
+
+.dept-icon.green{ background:rgba(102,187,106,.2); color:#66BB6A; }
+.dept-icon.blue{ background:rgba(66,165,245,.2); color:#42A5F5; }
+.dept-icon.orange{ background:rgba(255,167,38,.2); color:#FFA726; }
+.dept-icon.purple{ background:rgba(171,71,188,.2); color:#AB47BC; }
+.dept-icon.teal{ background:rgba(38,166,154,.2); color:#26A69A; }
+.dept-icon.gray{ background:rgba(158,158,158,.2); color:#BDBDBD; }
+
+.dept-card h3{
+
+    font-size:14px;
+
+    margin:0 0 8px 0;
+
+    letter-spacing:.5px;
+
+}
+
+.dept-card p{
+
+    font-size:12px;
+
+    color:#C7D8CD;
+
+    margin:0 0 14px 0;
+
+    line-height:1.4;
+
+    min-height:48px;
+
+}
+
+.dept-arrow{
+
+    width:32px;
+
+    height:32px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,.3);
+
+    background:transparent;
+
+    color:#fff;
+
+    cursor:pointer;
+
+}
+
+/*======================================================
+RIGHT SIDE - LOGIN CARD
+======================================================*/
+
+.login-card{
+
+    background:#fff;
+
+    border-radius:16px;
+
+    width:380px;
+
+    padding:36px 32px;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+
+    flex-shrink:0;
+
+}
+
+.login-card-icon{
+
+    width:64px;
+
+    height:64px;
+
+    border-radius:50%;
+
+    background:#E8F5E9;
+
+    color:#2E7D32;
+
+    font-size:26px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:0 auto 16px auto;
+
+}
+
+.login-card h2{
+
+    text-align:center;
+
+    margin:0 0 4px 0;
+
+    color:#1A2E22;
+
+}
+
+.login-card-subtitle{
+
+    text-align:center;
+
+    font-size:13px;
+
+    color:#6B7280;
+
+    margin:0 0 22px 0;
+
+}
+
+.login-card label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#374151;
+
+    margin:14px 0 6px 0;
+
+}
+
+.input-group{
+
+    display:flex;
+
+    align-items:center;
+
+    border:1px solid #E5E7EB;
+
+    border-radius:8px;
+
+    padding:0 12px;
+
+    gap:10px;
+
+}
+
+.input-group i{
+
+    color:#9CA3AF;
+
+    font-size:14px;
+
+}
+
+.input-group select,
+.input-group input{
+
+    border:none;
+
+    outline:none;
+
+    padding:11px 0;
+
+    font-size:14px;
+
+    flex:1;
+
+    background:transparent;
+
+}
+
+.input-eye{
+
+    background:none;
+
+    border:none;
+
+    color:#9CA3AF;
+
+    cursor:pointer;
+
+}
+
+.login-row{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin:16px 0;
+
+    font-size:13px;
+
+}
+
+.remember-label{
+
+    display:flex !important;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-weight:400 !important;
+
+    margin:0 !important;
+
+    color:#374151;
+
+}
+
+.forgot-link{
+
+    color:#2E7D32;
+
+    text-decoration:none;
+
+}
+
+.login-error{
+
+    color:#C62828;
+
+    font-size:13px;
+
+    margin-bottom:6px;
+
+    min-height:16px;
+
+}
+
+.signin-btn{
+
+    width:100%;
+
+    padding:13px 0;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:linear-gradient(90deg, #2E7D32, #4CAF50);
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+}
+
+.signin-btn:disabled{
+
+    opacity:.7;
+
+    cursor:default;
+
+}
+
+.or-divider{
+
+    text-align:center;
+
+    color:#9CA3AF;
+
+    font-size:12px;
+
+    margin:18px 0;
+
+    position:relative;
+
+}
+
+.or-divider::before,
+.or-divider::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:50%;
+
+    width:42%;
+
+    height:1px;
+
+    background:#E5E7EB;
+
+}
+
+.or-divider::before{ left:0; }
+.or-divider::after{ right:0; }
+
+.sso-btn{
+
+    width:100%;
+
+    padding:11px 0;
+
+    border:1px solid #E5E7EB;
+
+    border-radius:8px;
+
+    background:#fff;
+
+    color:#374151;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+}
+
+.secure-footer{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    font-size:12px;
+
+    color:#2E7D32;
+
+    background:#E8F5E9;
+
+    border-radius:8px;
+
+    padding:8px 0;
+
+}
+
+/*======================================================
+BOTTOM FEATURE BAR
+======================================================*/
+
+.feature-bar{
+
+    position:relative;
+
+    z-index:1;
+
+    background:rgba(0,0,0,.35);
+
+    border-top:1px solid rgba(255,255,255,.1);
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:space-around;
+
+    gap:20px;
+
+    padding:24px 40px;
+
+}
+
+.feature-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:#fff;
+
+    max-width:260px;
+
+}
+
+.feature-icon{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:rgba(102,187,106,.2);
+
+    color:#66BB6A;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
+}
+
+.feature-item strong{
+
+    display:block;
+
+    font-size:14px;
+
+}
+
+.feature-item p{
+
+    margin:2px 0 0 0;
+
+    font-size:12px;
+
+    color:#D8E8DE;
+
+}
+
+/*======================================================
+RESPONSIVE
+======================================================*/
+
+@media(max-width:1100px){
+
+    .dept-grid{
+
+        grid-template-columns:repeat(2, 1fr);
+
+    }
+
+}
+
+@media(max-width:700px){
+
+    .dept-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .login-main{
+
+        padding:30px 20px;
+
+    }
+
+}

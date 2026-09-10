@@ -1,1 +1,0 @@
- name: Unzip project on: workflow_dispatch jobs: unzip: runs-on: ubuntu-latest steps: - uses: actions/checkout@v4 - run: | unzip -o sugarcane-farmer-pwa.zip -d . rm sugarcane-farmer-pwa.zip - run: | git config user.name "github-actions" git config user.email "actions@github.com" git add -A git commit -m "Extract project files" || echo "nothing to commit" git push

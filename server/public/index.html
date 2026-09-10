@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sugarcane Plantation Management System</title>
+
+    <!-- Leaflet -->
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Dashboard CSS -->
+
+    <link rel="stylesheet"
+          href="css/dashboard.css">
+
+    <link rel="stylesheet"
+          href="css/map.css">
+
+    <link rel="stylesheet"
+         href="css/wizard.css">    
+
+    <link rel="stylesheet"
+         href="css/modal.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</head>
+
+<body>
+
+<!--==================================================
+HERO
+===================================================-->
+<header class="top-banner">
+
+    <div class="banner-left">
+
+        <div class="brand">
+
+    <img src="../images/logo.png"
+         class="logo"
+         alt="LANDSCAN Associates">
+
+    <div>
+
+        <h1>Sugarcane GIS Enterprise Dashboard</h1>
+
+        <p>Powered by LANDSCAN Associates</p>
+
+    </div>
+
+</div>
+
+    </div>
+
+    <div class="banner-middle">
+
+        <div class="banner-item">
+
+            <span>Current Season</span>
+
+            <strong>2025 / 2026</strong>
+
+        </div>
+
+        <div class="banner-item">
+
+            <span>Harvest Progress</span>
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"></div>
+
+            </div>
+
+            <strong>68%</strong>
+
+        </div>
+
+        <div class="banner-item">
+
+            <span>Healthy Fields</span>
+
+            <strong>82%</strong>
+
+        </div>
+
+    </div>
+
+    <div class="banner-right">
+
+        <div class="status">
+
+            <i class="fa-solid fa-circle"></i>
+
+            System Online
+
+        </div>
+
+        <div id="datetime"></div>
+
+        <div class="user" id="userMenuToggle">
+
+    <i class="fa-solid fa-circle-user"></i>
+
+    <div>
+
+        <span id="userDepartmentLabel">Administrator</span>
+
+        <strong id="userNameLabel">-</strong>
+
+    </div>
+
+    <i class="fa-solid fa-chevron-down"></i>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <button type="button" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </button>
+
+    </div>
+
+</div>
+
+    </div>
+
+</header>
+<!--==================================================
+MAIN LAYOUT
+===================================================-->
+
+<div class="dashboard">
+
+    <!--==========================================
+    LEFT SIDEBAR
+    ===========================================-->
+<aside class="sidebar">
+
+    <!-- Navigation -->
+
+    <nav class="sidebar-nav" id="sidebarNav">
+
+        <a href="#dashboardOverview" data-target="dashboardOverview" class="active">
+            <i class="fa-solid fa-house"></i>
+            Dashboard
+        </a>
+
+        <a href="#mapSection" data-target="mapSection">
+            <i class="fa-solid fa-map-location-dot"></i>
+            Plantation Map
+        </a>
+
+        <a href="#registerSection" data-target="registerSection">
+            <i class="fa-solid fa-table"></i>
+            Parcel Register
+        </a>
+
+        <a href="#growersSection" data-target="growersSection">
+            <i class="fa-solid fa-users"></i>
+            Growers
+        </a>
+
+        <a href="#productionSection" data-target="productionSection">
+            <i class="fa-solid fa-tractor"></i>
+            Production
+        </a>
+
+        <a href="#harvestSection" data-target="harvestSection">
+            <i class="fa-solid fa-seedling"></i>
+            Harvest
+        </a>
+
+        <a href="#ndviSection" data-target="ndviSection">
+            <i class="fa-solid fa-satellite-dish"></i>
+            NDVI Monitoring
+        </a>
+
+        <a href="#analyticsSection" data-target="analyticsSection">
+            <i class="fa-solid fa-chart-column"></i>
+            Analytics
+        </a>
+
+        <a href="#reportsSection" data-target="reportsSection">
+            <i class="fa-solid fa-file-lines"></i>
+            Reports
+        </a>
+
+        <a href="#" data-action="downloadBtn">
+            <i class="fa-solid fa-download"></i>
+            Downloads
+        </a>
+
+        <a href="#settingsSection" data-target="settingsSection">
+            <i class="fa-solid fa-gear"></i>
+            Settings
+        </a>
+
+    </nav>
+
+    <!-- Quick Filters -->
+
+    <div class="sidebar-card" id="quickFiltersCard">
+
+        </h3>
+
+        <label>Variety</label>
+
+        <select id="filterVariety">
+
+            <option value="">All Varieties</option>
+
+        </select>
+
+        <label>Status</label>
+
+        <select id="filterStatus">
+
+            <option value="">All Status</option>
+
+        </select>
+
+        <label>Village</label>
+
+        <select id="filterVillage">
+
+            <option value="">All Villages</option>
+
+        </select>
+
+        <label>Grower</label>
+
+        <select id="filterGrower">
+
+            <option value="">All Growers</option>
+
+        </select>
+
+        <label>Ratoon Cycle</label>
+
+        <select id="filterRatoon">
+
+            <option value="">All Ratoon Cycles</option>
+
+        </select>
+
+        <button id="applyFilters">
+
+            <i class="fa-solid fa-filter"></i>
+
+            Apply Filters
+
+        </button>
+
+        <button id="resetFilters">
+
+            <i class="fa-solid fa-rotate-left"></i>
+
+            Reset Filters
+
+        </button>
+
+    </div>
+
+    <!-- Quick Actions -->
+
+    <div class="sidebar-card">
+
+        <h3>
+
+            <i class="fa-solid fa-bolt"></i>
+
+            Quick Actions
+
+        </h3>
+
+       <div class="action-list">
+
+    <button id="addParcelBtn">
+        <i class="fa-solid fa-plus"></i>
+        Add New Parcel
+    </button>
+
+    <button id="addGrowerBtn">
+        <i class="fa-solid fa-user-plus"></i>
+        Add New Grower
+    </button>
+
+    <button id="uploadBtn">
+        <i class="fa-solid fa-upload"></i>
+        Bulk Parcel Upload
+    </button>
+
+    <button id="reportBtn">
+        <i class="fa-solid fa-file-circle-plus"></i>
+        Generate Report
+    </button>
+
+    <button id="downloadBtn">
+        <i class="fa-solid fa-download"></i>
+        Download Data
+    </button>
+
+    <button id="coordPickerBtn">
+        <i class="fa-solid fa-location-crosshairs"></i>
+        Get Coordinates
+    </button>
+
+</div>
+    </div>
+
+</aside>
+
+   <!--==================================================
+CENTER CONTENT
+===================================================-->
+
+<main class="center-content" id="dashboardSection">
+
+  <div class="view-panel dashboard-overview" id="dashboardOverview" data-display="flex" style="display:flex;">
+
+    <!--==========================================
+    SEARCH PANEL
+    ===========================================-->
+
+    <section class="search-panel">
+
+        <div class="search-box">
+
+            <input
+                type="number"
+                id="parcelSearch"
+                placeholder="Search Parcel ID...">
+
+            <button id="searchBtn">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                Search Parcel
+
+            </button>
+
+        </div>
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="growerSearch"
+                placeholder="Search Grower Name...">
+
+            <button id="growerBtn">
+
+                <i class="fa-solid fa-users"></i>
+
+                Search Grower
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    KPI CARDS
+    ===========================================-->
+
+    <section class="kpi-cards">
+
+        <!-- Growers -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon green">
+
+                <i class="fa-solid fa-users"></i>
+
+            </div>
+
+            <div class="kpi-details">
+
+                <h2 id="growers">0</h2>
+
+                <span>Total Growers</span>
+
+            </div>
+
+            <canvas id="growersSpark"></canvas>
+
+        </div>
+
+        <!-- Parcels -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon blue">
+
+                <i class="fa-solid fa-map"></i>
+
+            </div>
+
+            <div class="kpi-details">
+
+                <h2 id="parcels">0</h2>
+
+                <span>Total Parcels</span>
+
+            </div>
+
+            <canvas id="parcelsSpark"></canvas>
+
+        </div>
+
+        <!-- Hectares -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon orange">
+
+                <i class="fa-solid fa-ruler-combined"></i>
+
+            </div>
+
+            <div class="kpi-details">
+
+                <h2 id="hectares">0</h2>
+
+                <span>Total Hectares</span>
+
+            </div>
+
+            <canvas id="hectaresSpark"></canvas>
+
+        </div>
+
+        <!-- Yield -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon purple">
+
+                <i class="fa-solid fa-tractor"></i>
+
+            </div>
+
+            <div class="kpi-details">
+
+                <h2 id="yield">0</h2>
+
+                <span>Estimated Production (Tonnes)</span>
+
+            </div>
+
+            <canvas id="yieldSpark"></canvas>
+
+        </div>
+
+        <!-- Healthy Fields -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon teal">
+
+                <i class="fa-solid fa-leaf"></i>
+
+            </div>
+
+            <div class="kpi-details">
+
+                <h2 id="dashHealthyPct">0%</h2>
+
+                <span>Healthy Fields</span>
+
+            </div>
+
+        </div>
+
+        <!-- Overdue Parcels -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-icon red">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            </div>
+
+            <div class="kpi-details">
+
+                <h2 id="dashOverdueCount">0</h2>
+
+                <span>Overdue Parcels</span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    PLANTATION OVERVIEW / SEASON SUMMARY / HARVEST STATUS
+    ===========================================-->
+
+    <section class="dash-main-grid">
+
+        <div class="dash-card dash-plantation">
+
+            <div class="card-header">
+                <i class="fa-solid fa-chart-pie"></i>
+                Plantation Overview
+            </div>
+
+            <div class="plantation-charts">
+
+                <div class="mini-chart-block">
+                    <span class="mini-chart-title">Area by Variety (Ha)</span>
+                    <div class="mini-donut-wrap">
+                        <canvas id="dashAreaVarietyChart"></canvas>
+                        <div class="mini-donut-center">
+                            <strong id="dashAreaTotal">0</strong>
+                            <span>Ha</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mini-chart-block">
+                    <span class="mini-chart-title">Production Estimate by Variety (Tonnes)</span>
+                    <canvas id="dashProductionVarietyChart"></canvas>
+                </div>
+
+                <div class="mini-chart-block">
+                    <span class="mini-chart-title">Parcels by Status</span>
+                    <canvas id="dashParcelStatusChart"></canvas>
+                </div>
+
+                <div class="mini-chart-block">
+                    <span class="mini-chart-title">Harvest Trend by Month (Tonnes)</span>
+                    <canvas id="dashMonthlyTrendChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="dash-card dash-season">
+
+            <div class="card-header">
+                <i class="fa-solid fa-calendar-check"></i>
+                Season Summary
+            </div>
+
+            <div id="dashSeasonSummary" class="dash-summary-list">
+                <p><strong>Total Area Planted</strong><span id="seasonAreaPlanted">-</span></p>
+                <p><strong>Harvested Area</strong><span id="seasonHarvestedArea">-</span></p>
+                <p><strong>Production Harvested</strong><span id="seasonProdHarvested">-</span></p>
+                <p><strong>Avg Yield</strong><span id="seasonAvgYield">-</span></p>
+                <p><strong>Ratoon Cycles Active</strong><span id="seasonRatoonCycles">-</span></p>
+            </div>
+
+            <div class="dash-card-footer">
+                <i class="fa-solid fa-chart-line"></i>
+                Recent Activity
+            </div>
+
+            <div id="dashActivityList" class="dash-activity-list">
+                <p class="dash-empty">No activity yet.</p>
+            </div>
+
+        </div>
+
+        <div class="dash-card dash-harveststatus">
+
+            <div class="card-header">
+                <i class="fa-solid fa-hourglass-half"></i>
+                Harvest Status
+            </div>
+
+            <canvas id="dashHarvestStatusChart"></canvas>
+
+            <div class="dash-card-footer">
+                <i class="fa-solid fa-users"></i>
+                Top Growers (by Area)
+            </div>
+
+            <div class="dash-mini-table-wrap">
+                <table class="dash-mini-table" id="dashTopGrowersTable">
+                    <thead>
+                        <tr><th>Grower</th><th>Parcels</th><th>Area (Ha)</th></tr>
+                    </thead>
+                    <tbody id="dashTopGrowersBody">
+                        <tr><td colspan="3">No growers loaded yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="button" class="dash-view-all-btn" id="dashViewAllGrowersBtn">
+                <i class="fa-solid fa-users"></i>
+                View All Growers
+            </button>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    HARVEST SCHEDULE / QUICK ACTIONS / DATA SHORTCUTS
+    ===========================================-->
+
+    <section class="dash-bottom-grid">
+
+        <div class="dash-card dash-harvestsched">
+
+            <div class="card-header">
+                <i class="fa-solid fa-seedling"></i>
+                Harvest Schedule (Next 7 Days)
+            </div>
+
+            <div class="dash-mini-table-wrap">
+                <table class="dash-mini-table" id="dashHarvestPreviewTable">
+                    <thead>
+                        <tr>
+                            <th>Parcel ID</th>
+                            <th>Grower</th>
+                            <th>Variety</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Area (Ha)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashHarvestPreviewBody">
+                        <tr><td colspan="6">No parcels loaded yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="button" class="dash-view-all-btn" id="dashViewFullHarvestBtn">
+                <i class="fa-solid fa-seedling"></i>
+                View Full Harvest Schedule
+            </button>
+
+        </div>
+
+        <div class="dash-card dash-quickactions">
+
+            <div class="card-header">
+                <i class="fa-solid fa-bolt"></i>
+                Map Quick Actions
+            </div>
+
+            <div class="quick-actions-grid">
+
+                <button type="button" id="dashQaAddParcel" class="quick-action-btn">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <strong>Add Parcel</strong>
+                    <span>Digitize New Parcel</span>
+                </button>
+
+                <button type="button" id="dashQaMeasure" class="quick-action-btn">
+                    <i class="fa-solid fa-ruler"></i>
+                    <strong>Measurements</strong>
+                    <span>Measure Area/Distance</span>
+                </button>
+
+                <button type="button" id="dashQaFindParcel" class="quick-action-btn">
+                    <i class="fa-solid fa-magnifying-glass-location"></i>
+                    <strong>Find Parcel</strong>
+                    <span>Search on Map</span>
+                </button>
+
+                <button type="button" id="dashQaPrintMap" class="quick-action-btn">
+                    <i class="fa-solid fa-print"></i>
+                    <strong>Print Map</strong>
+                    <span>Export Map Layout</span>
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="dash-card dash-shortcuts">
+
+            <div class="card-header">
+                <i class="fa-solid fa-diagram-project"></i>
+                Data Shortcuts
+            </div>
+
+            <div class="shortcuts-grid">
+
+                <button type="button" id="dashScParcelRegister" class="quick-action-btn">
+                    <i class="fa-solid fa-table"></i>
+                    <strong>Parcel Register</strong>
+                    <span>View All Parcels</span>
+                </button>
+
+                <button type="button" id="dashScGrowers" class="quick-action-btn">
+                    <i class="fa-solid fa-users"></i>
+                    <strong>Growers Directory</strong>
+                    <span>Manage Growers</span>
+                </button>
+
+                <button type="button" id="dashScProduction" class="quick-action-btn">
+                    <i class="fa-solid fa-tractor"></i>
+                    <strong>Production Records</strong>
+                    <span>View Production Data</span>
+                </button>
+
+                <button type="button" id="dashScReports" class="quick-action-btn">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <strong>Reports Center</strong>
+                    <span>Generate Reports</span>
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+  </div>
+  <!-- /#dashboardOverview -->
+
+    <!--==========================================
+    MAP PANEL
+    ===========================================-->
+
+    <section class="map-panel view-panel" id="mapSection" data-display="block" style="display:none;">
+
+        <div class="panel-header map-header">
+
+            <div>
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Plantation Map
+
+            </div>
+
+            <div class="map-toolbar">
+
+                <button id="homeMap">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    Home
+
+                </button>
+
+                <button id="resetMap">
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+                    Reset
+
+                </button>
+
+                <button id="fullscreenMap">
+
+                    <i class="fa-solid fa-expand"></i>
+
+                    Fullscreen
+
+                </button>
+
+                <button id="printMap">
+
+                    <i class="fa-solid fa-print"></i>
+
+                    Print
+
+                </button>
+
+                <button id="exportMap">
+
+                    <i class="fa-solid fa-download"></i>
+
+                    Export
+
+                </button>
+
+            </div>
+
+        </div>
+ <!--==================================================
+DRAWING TOOLBAR
+===================================================-->
+
+<div id="drawingToolbar" class="drawing-toolbar" style="display:none;">
+
+    <button id="finishDrawingBtn">
+
+        <i class="fa-solid fa-check"></i>
+
+        Finish
+
+    </button>
+
+    <button id="undoVertexBtn">
+
+        <i class="fa-solid fa-arrow-rotate-left"></i>
+
+        Undo
+
+    </button>
+
+    <button id="cancelDrawingBtn">
+
+        <i class="fa-solid fa-xmark"></i>
+
+        Cancel
+
+    </button>
+
+    <div class="drawing-info">
+
+        <strong>Area:</strong>
+
+        <span id="toolbarArea">
+
+            0.00 Ha
+
+        </span>
+
+    </div>
+
+</div>
+        <div id="map"></div>
+
+    </section>
+
+    <!--==========================================
+    PARCEL REGISTER
+    ===========================================-->
+
+    <section class="table-panel view-panel" id="registerSection" data-display="flex" style="display:none;">
+
+        <div class="panel-header">
+
+            <i class="fa-solid fa-table"></i>
+
+            Parcel Register
+
+            <div class="panel-header-actions">
+
+                <button type="button" id="registerAddBtn">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Parcel
+                </button>
+
+                <button type="button" id="registerExportCsvBtn">
+                    <i class="fa-solid fa-file-csv"></i>
+                    CSV
+                </button>
+
+                <button type="button" id="registerExportXlsxBtn">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Excel
+                </button>
+
+                <button type="button" id="registerFilterBtn">
+                    <i class="fa-solid fa-filter"></i>
+                    Filter
+                </button>
+
+            </div>
+
+        </div>
+        
+        <div class="table-wrapper">
+
+        <table id="parcelTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>Parcel ID</th>
+
+                    <th>Grower</th>
+
+                    <th>Village</th>
+
+                    <th>Variety</th>
+
+                    <th>Area (Ha)</th>
+
+                    <th>Crop Age</th>
+
+                    <th>Status</th>
+
+                    <th>Yield (Tonnes)</th>
+
+                    <th></th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="parcelTableBody">
+
+            </tbody>
+
+        </table>
+
+        </div>
+
+        <div class="table-footer" id="registerTableFooter">
+
+            Showing 0 parcels
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    GROWERS DIRECTORY
+    ===========================================-->
+
+    <section class="table-panel view-panel" id="growersSection" data-display="flex" style="display:none;">
+
+        <div class="panel-header">
+
+            <i class="fa-solid fa-users"></i>
+
+            Growers Directory
+
+            <div class="panel-header-actions">
+
+                <button type="button" id="growersAddBtn">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Grower
+                </button>
+
+                <button type="button" id="growersImportBtn">
+                    <i class="fa-solid fa-upload"></i>
+                    Import
+                </button>
+
+                <button type="button" id="growersExportBtn">
+                    <i class="fa-solid fa-download"></i>
+                    Export
+                </button>
+
+                <button type="button" id="growersFilterBtn">
+                    <i class="fa-solid fa-filter"></i>
+                    Filter
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+        <table id="growersTable">
+
+            <thead>
+                <tr>
+                    <th>Grower ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Village</th>
+                    <th>Parcels</th>
+                    <th>Total Area (Ha)</th>
+                    <th>Total Production (T)</th>
+                </tr>
+            </thead>
+
+            <tbody id="growersTableBody"></tbody>
+
+        </table>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    PRODUCTION OVERVIEW
+    ===========================================-->
+
+    <section class="table-panel view-panel" id="productionSection" data-display="flex" style="display:none;">
+
+        <div class="panel-header">
+
+            <i class="fa-solid fa-tractor"></i>
+
+            Production &amp; Analytics
+
+            <div class="panel-header-actions">
+
+                <button type="button" id="productionExportCsvBtn">
+                    <i class="fa-solid fa-file-csv"></i>
+                    CSV
+                </button>
+
+                <button type="button" id="productionExportXlsxBtn">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Excel
+                </button>
+
+                <button type="button" id="productionFilterBtn">
+                    <i class="fa-solid fa-filter"></i>
+                    Filter
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="mini-kpi-strip">
+
+            <div class="mini-kpi">
+                <span>Total Parcels</span>
+                <strong id="prodKpiParcels">-</strong>
+            </div>
+
+            <div class="mini-kpi">
+                <span>Total Hectares</span>
+                <strong id="prodKpiHectares">-</strong>
+            </div>
+
+            <div class="mini-kpi">
+                <span>Est. Production (T)</span>
+                <strong id="prodKpiTonnage">-</strong>
+            </div>
+
+            <div class="mini-kpi">
+                <span>Avg Yield (T/Ha)</span>
+                <strong id="prodKpiAvgYield">-</strong>
+            </div>
+
+        </div>
+
+        <div class="mini-charts-row">
+
+            <div class="mini-chart-block">
+                <span class="mini-chart-title">Area by Variety (Ha)</span>
+                <canvas id="prodAreaVarietyChart"></canvas>
+            </div>
+
+            <div class="mini-chart-block">
+                <span class="mini-chart-title">Production Estimate by Variety (Tonnes)</span>
+                <canvas id="prodProductionVarietyChart"></canvas>
+            </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+        <table id="productionTable">
+
+            <thead>
+                <tr>
+                    <th>Variety</th>
+                    <th>Parcels</th>
+                    <th>Area (Ha)</th>
+                    <th>Estimated Tonnage</th>
+                </tr>
+            </thead>
+
+            <tbody id="productionTableBody"></tbody>
+
+        </table>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    HARVEST SCHEDULE
+    ===========================================-->
+
+    <section class="table-panel view-panel" id="harvestSection" data-display="flex" style="display:none;">
+
+        <div class="panel-header">
+
+            <i class="fa-solid fa-seedling"></i>
+
+            Harvest Management
+
+            <div class="panel-header-actions">
+
+                <button type="button" id="harvestExportCsvBtn">
+                    <i class="fa-solid fa-file-csv"></i>
+                    CSV
+                </button>
+
+                <button type="button" id="harvestExportXlsxBtn">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Excel
+                </button>
+
+                <button type="button" id="harvestFilterBtn">
+                    <i class="fa-solid fa-filter"></i>
+                    Filter
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="mini-kpi-strip">
+
+            <div class="mini-kpi">
+                <span>Harvest Progress</span>
+                <strong id="harvestKpiProgress">-</strong>
+            </div>
+
+            <div class="mini-kpi">
+                <span>Harvested Area (Ha)</span>
+                <strong id="harvestKpiArea">-</strong>
+            </div>
+
+            <div class="mini-kpi">
+                <span>Harvested (Tonnes)</span>
+                <strong id="harvestKpiTonnes">-</strong>
+            </div>
+
+            <div class="mini-kpi">
+                <span>Overdue Parcels</span>
+                <strong id="harvestKpiOverdue">-</strong>
+            </div>
+
+        </div>
+
+        <div class="mini-charts-row">
+
+            <div class="mini-chart-block">
+                <span class="mini-chart-title">Harvest Status</span>
+                <canvas id="harvestStatusChart"></canvas>
+            </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+        <table id="harvestTable">
+
+            <thead>
+                <tr>
+                    <th>Parcel ID</th>
+                    <th>Grower</th>
+                    <th>Variety</th>
+                    <th>Harvest Due</th>
+                    <th>Harvest Status</th>
+                    <th>Area (Ha)</th>
+                </tr>
+            </thead>
+
+            <tbody id="harvestTableBody"></tbody>
+
+        </table>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    NDVI CROP MONITORING
+    ===========================================-->
+
+    <section class="view-panel ndvi-panel" id="ndviSection" data-display="block" style="display:none;">
+
+        <div class="ndvi-grid">
+
+            <!--==================================
+            LEFT COLUMN - EXPLAINER + LEGEND
+            ===================================-->
+
+            <div class="ndvi-col ndvi-left">
+
+                <div class="ndvi-card">
+                    <h3><i class="fa-solid fa-satellite-dish"></i> NDVI Crop Monitoring</h3>
+                    <p class="ndvi-sub">Normalized Difference Vegetation Index</p>
+                    <p class="ndvi-desc">
+                        NDVI measures vegetation health from NIR and Red light
+                        reflectance. It helps identify crop condition, stress
+                        areas, and supports data-driven management decisions.
+                    </p>
+                    <div class="ndvi-formula">
+                        NDVI = (NIR − Red) / (NIR + Red)
+                        <span>Range: -1 to +1</span>
+                    </div>
+                </div>
+
+                <div class="ndvi-card">
+                    <h3>NDVI Health Indicator</h3>
+                    <div class="ndvi-legend-row"><span class="dot" style="background:#2E7D32"></span><div><strong>Very Healthy</strong><small>0.6 – 1.0 · Dense, healthy vegetation</small></div></div>
+                    <div class="ndvi-legend-row"><span class="dot" style="background:#8BC34A"></span><div><strong>Healthy</strong><small>0.3 – 0.6 · Good vegetation condition</small></div></div>
+                    <div class="ndvi-legend-row"><span class="dot" style="background:#FDD835"></span><div><strong>Moderate</strong><small>0.1 – 0.3 · Stress or uneven growth</small></div></div>
+                    <div class="ndvi-legend-row"><span class="dot" style="background:#FB8C00"></span><div><strong>Poor</strong><small>-0.1 – 0.1 · High stress, sparse vegetation</small></div></div>
+                    <div class="ndvi-legend-row"><span class="dot" style="background:#E53935"></span><div><strong>Very Poor</strong><small>-1 – -0.1 · Bare soil / very poor condition</small></div></div>
+                    <div class="ndvi-legend-row"><span class="dot" style="background:#9E9E9E"></span><div><strong>No Data</strong><small>Parcel has no recorded reading yet</small></div></div>
+                </div>
+
+                <div class="ndvi-card" id="ndviAddCard">
+                    <h3><i class="fa-solid fa-camera"></i> Add NDVI Reading</h3>
+                    <p class="ndvi-desc">Record a real reading from drone imagery or an external satellite/desktop NDVI tool.</p>
+                    <button type="button" class="ndvi-btn-primary" id="openNdviUploadBtn">
+                        <i class="fa-solid fa-upload"></i> New Reading
+                    </button>
+                </div>
+
+            </div>
+
+            <!--==================================
+            CENTER - MAP
+            ===================================-->
+
+            <div class="ndvi-col ndvi-center">
+
+                <div class="ndvi-card ndvi-map-card">
+
+                    <div class="ndvi-map-header">
+                        <div>
+                            <h3>NDVI Map View</h3>
+                            <p class="ndvi-sub" id="ndviMapSubtitle">No readings recorded yet</p>
+                        </div>
+                    </div>
+
+                    <div id="ndviMap"></div>
+
+                    <div class="ndvi-map-legend">
+                        <div><span class="dot" style="background:#2E7D32"></span>0.6–1.0</div>
+                        <div><span class="dot" style="background:#8BC34A"></span>0.3–0.6</div>
+                        <div><span class="dot" style="background:#FDD835"></span>0.1–0.3</div>
+                        <div><span class="dot" style="background:#FB8C00"></span>-0.1–0.1</div>
+                        <div><span class="dot" style="background:#E53935"></span>-1–-0.1</div>
+                        <div><span class="dot" style="background:#9E9E9E"></span>No Data</div>
+                    </div>
+
+                </div>
+
+                <div class="ndvi-row">
+
+                    <div class="ndvi-card">
+                        <h3>NDVI Comparison by Variety</h3>
+                        <canvas id="ndviVarietyChart"></canvas>
+                    </div>
+
+                    <div class="ndvi-card">
+                        <h3>NDVI Insights</h3>
+                        <div id="ndviInsights" class="ndvi-insights"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!--==================================
+            RIGHT COLUMN - STATS
+            ===================================-->
+
+            <div class="ndvi-col ndvi-right">
+
+                <div class="ndvi-card">
+                    <h3>NDVI Statistics</h3>
+                    <div class="ndvi-stat-grid">
+                        <div class="ndvi-stat"><span id="ndviAvg">-</span><label>Average NDVI</label></div>
+                        <div class="ndvi-stat good"><span id="ndviMax">-</span><label>Max NDVI</label></div>
+                        <div class="ndvi-stat bad"><span id="ndviMin">-</span><label>Min NDVI</label></div>
+                        <div class="ndvi-stat"><span id="ndviCoverage">-</span><label>Parcels with Data</label></div>
+                    </div>
+                </div>
+
+                <div class="ndvi-card">
+                    <h3>NDVI Distribution</h3>
+                    <canvas id="ndviDistChart"></canvas>
+                </div>
+
+                <div class="ndvi-card">
+                    <h3>NDVI Trend (All Parcels)</h3>
+                    <canvas id="ndviTrendChart"></canvas>
+                </div>
+
+                <div class="ndvi-card">
+                    <h3>Satellite / Drone Source</h3>
+                    <p class="ndvi-desc" style="margin:0">
+                        This deployment has no live satellite feed connected -
+                        readings are logged from uploaded drone imagery (real
+                        NDVI math when NIR+Red bands are provided, or a
+                        labeled RGB approximation otherwise) or entered
+                        manually from external tools.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    NDVI UPLOAD MODAL
+    ===========================================-->
+
+    <div id="ndviUploadModal" class="modal">
+
+        <div class="modal-content ndvi-modal">
+
+            <div class="modal-header">
+                <span>Add NDVI Reading</span>
+                <span class="closeRoute" id="ndviModalCloseBtn">&times;</span>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label>Parcel</label>
+                    <select id="ndviParcelSelect"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Reading Date</label>
+                    <input type="date" id="ndviReadingDate">
+                </div>
+
+                <div class="ndvi-mode-tabs">
+                    <button type="button" class="ndvi-mode-tab active" data-mode="multispectral">NIR + Red Bands</button>
+                    <button type="button" class="ndvi-mode-tab" data-mode="rgb">RGB Photo (approx.)</button>
+                    <button type="button" class="ndvi-mode-tab" data-mode="manual">Manual Entry</button>
+                </div>
+
+                <div class="ndvi-mode-panel" id="ndviModeMultispectral">
+                    <p class="ndvi-desc">Upload the NIR band image and the Red band image separately (grayscale exports from your multispectral drone). Computes real NDVI, pixel by pixel.</p>
+                    <label>NIR Band Image</label>
+                    <input type="file" accept="image/*" id="ndviNirFile">
+                    <label>Red Band Image</label>
+                    <input type="file" accept="image/*" id="ndviRedFile">
+                </div>
+
+                <div class="ndvi-mode-panel" id="ndviModeRgb" style="display:none">
+                    <p class="ndvi-desc">Upload a normal drone/phone photo. Computes VARI, a visible-light vegetation index - <strong>not true NDVI</strong> (a standard camera has no NIR sensor), but a reasonable stress-detection proxy.</p>
+                    <label>RGB Photo</label>
+                    <input type="file" accept="image/*" id="ndviRgbFile">
+                </div>
+
+                <div class="ndvi-mode-panel" id="ndviModeManual" style="display:none">
+                    <p class="ndvi-desc">Enter values already computed elsewhere (Pix4D, QGIS, Sentinel Hub EO Browser, etc).</p>
+                    <label>Source</label>
+                    <select id="ndviManualSource">
+                        <option value="satellite">Satellite (external tool)</option>
+                        <option value="manual">Other / Manual</option>
+                    </select>
+                    <label>Average NDVI</label>
+                    <input type="number" step="0.01" min="-1" max="1" id="ndviManualAvg">
+                    <label>Min NDVI (optional)</label>
+                    <input type="number" step="0.01" min="-1" max="1" id="ndviManualMin">
+                    <label>Max NDVI (optional)</label>
+                    <input type="number" step="0.01" min="-1" max="1" id="ndviManualMax">
+                </div>
+
+                <div id="ndviComputedPreview" class="ndvi-computed-preview" style="display:none"></div>
+
+                <label>Notes (optional)</label>
+                <input type="text" id="ndviNotes" placeholder="e.g. Flight conditions, field observations">
+
+                <div id="ndviUploadError" class="login-error"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-primary" id="ndviSaveBtn">Save Reading</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!--==========================================
+    SETTINGS
+    ===========================================-->
+
+    <section class="table-panel view-panel" id="settingsSection" data-display="flex" style="display:none;">
+
+        <div class="panel-header">
+
+            <i class="fa-solid fa-gear"></i>
+
+            Settings
+
+        </div>
+
+        <div class="settings-body">
+
+            <div class="form-group">
+                <label>Default Base Map</label>
+                <select id="settingDefaultLayer">
+                    <option value="street">Street Map</option>
+                    <option value="satellite">Satellite</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Route Analysis Distance Unit</label>
+                <select id="settingDistanceUnit">
+                    <option value="km">Kilometres</option>
+                    <option value="mi">Miles</option>
+                </select>
+            </div>
+
+            <p class="settings-note">
+                These preferences apply for this browser session.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!--==========================================
+    REPORTS & EXPORTS
+    ===========================================-->
+
+    <section class="table-panel view-panel" id="reportsSection" data-display="flex" style="display:none;">
+
+        <div class="panel-header">
+
+            <i class="fa-solid fa-file-lines"></i>
+
+            Reports &amp; Exports
+
+        </div>
+
+        <div class="reports-grid">
+
+            <div class="report-card">
+
+                <h4><i class="fa-solid fa-table"></i> Parcel Summary Report</h4>
+
+                <p>Summary of all parcels by variety, status, and location.</p>
+
+                <div class="report-card-actions">
+                    <button type="button" data-report="parcels" data-format="xlsx">
+                        <i class="fa-solid fa-file-excel"></i> Excel
+                    </button>
+                    <button type="button" class="secondary" data-report="parcels" data-format="csv">
+                        <i class="fa-solid fa-file-csv"></i> CSV
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="report-card">
+
+                <h4><i class="fa-solid fa-tractor"></i> Production Report</h4>
+
+                <p>Production analysis by variety, village, and season.</p>
+
+                <div class="report-card-actions">
+                    <button type="button" data-report="production" data-format="xlsx">
+                        <i class="fa-solid fa-file-excel"></i> Excel
+                    </button>
+                    <button type="button" class="secondary" data-report="production" data-format="csv">
+                        <i class="fa-solid fa-file-csv"></i> CSV
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="report-card">
+
+                <h4><i class="fa-solid fa-seedling"></i> Harvest Report</h4>
+
+                <p>Harvest performance, due dates, and overdue parcels.</p>
+
+                <div class="report-card-actions">
+                    <button type="button" data-report="harvest" data-format="xlsx">
+                        <i class="fa-solid fa-file-excel"></i> Excel
+                    </button>
+                    <button type="button" class="secondary" data-report="harvest" data-format="csv">
+                        <i class="fa-solid fa-file-csv"></i> CSV
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="report-card">
+
+                <h4><i class="fa-solid fa-users"></i> Grower Report</h4>
+
+                <p>Grower performance and parcel/production summary.</p>
+
+                <div class="report-card-actions">
+                    <button type="button" data-report="growers" data-format="xlsx">
+                        <i class="fa-solid fa-file-excel"></i> Excel
+                    </button>
+                    <button type="button" class="secondary" data-report="growers" data-format="csv">
+                        <i class="fa-solid fa-file-csv"></i> CSV
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="report-card">
+
+                <h4><i class="fa-solid fa-chart-pie"></i> Variety Report</h4>
+
+                <p>Variety performance and area/production distribution.</p>
+
+                <div class="report-card-actions">
+                    <button type="button" data-report="variety" data-format="xlsx">
+                        <i class="fa-solid fa-file-excel"></i> Excel
+                    </button>
+                    <button type="button" class="secondary" data-report="variety" data-format="csv">
+                        <i class="fa-solid fa-file-csv"></i> CSV
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="report-card">
+
+                <h4><i class="fa-solid fa-sliders"></i> Custom Report</h4>
+
+                <p>Set your Quick Filters, then export exactly what's showing.</p>
+
+                <div class="report-card-actions">
+                    <button type="button" id="reportCustomFilterBtn">
+                        <i class="fa-solid fa-filter"></i> Set Filters
+                    </button>
+                    <button type="button" class="secondary" id="reportCustomPrintBtn">
+                        <i class="fa-solid fa-print"></i> Print / PDF
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+<!--==================================================
+RIGHT SIDEBAR
+===================================================-->
+
+<aside class="right-sidebar" id="analyticsSection">
+
+    <!--==========================================
+    HARVEST STATUS
+    ===========================================-->
+
+    <div class="analytics-card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-chart-pie"></i>
+
+            Harvest Status
+
+        </div>
+
+        <canvas id="statusChart"></canvas>
+
+    </div>
+
+    <!--==========================================
+    VARIETY DISTRIBUTION
+    ===========================================-->
+
+    <div class="analytics-card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            Variety Distribution
+
+        </div>
+
+        <canvas id="varietyChart"></canvas>
+
+    </div>
+
+    <!--==========================================
+    PARCEL INFORMATION
+    ===========================================-->
+
+    <div class="analytics-card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Parcel Information
+
+        </div>
+
+        <div id="parcelInfo">
+
+            <p>Select a parcel from the map.</p>
+
+        </div>
+
+    </div>
+
+    <!--==========================================
+    SYSTEM SUMMARY
+    ===========================================-->
+
+    <div class="analytics-card">
+
+        <div class="card-header">
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            System Summary
+
+        </div>
+
+        <div id="summary">
+
+            <p>
+
+                <strong>Total Growers</strong>
+
+                <span id="sumGrowers">0</span>
+
+            </p>
+
+            <p>
+
+                <strong>Total Parcels</strong>
+
+                <span id="sumParcels">0</span>
+
+            </p>
+
+            <p>
+
+                <strong>Total Hectares</strong>
+
+                <span id="sumHectares">0</span>
+
+            </p>
+
+            <p>
+
+                <strong>Estimated Production</strong>
+
+                <span id="sumYield">0</span>
+
+            </p>
+
+            <p>
+
+                <strong>Largest Variety</strong>
+
+                <span id="topVariety">-</span>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</aside>
+
+</div>
+
+<!-- =====================================================
+ADD GROWER MODAL
+===================================================== -->
+
+<div id="growerModal" class="modal">
+
+    <div class="modal-content small-modal">
+
+        <div class="modal-header">
+
+            <h2>
+                <i class="fa-solid fa-user-plus"></i>
+                Add New Grower
+            </h2>
+
+            <span class="closeGrower">&times;</span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="form-group">
+
+                <label>Grower Name</label>
+
+                <input
+                    type="text"
+                    id="growerName"
+                    placeholder="Enter grower name">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Phone Number</label>
+
+                <input
+                    type="text"
+                    id="growerPhone"
+                    placeholder="07XXXXXXXX">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Village</label>
+
+                <input
+                    type="text"
+                    id="growerVillage"
+                    placeholder="Village">
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                id="cancelGrowerBtn"
+                class="btn-secondary">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                id="saveGrowerBtn"
+                class="btn-primary">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Save Grower
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+EDIT PARCEL MODAL
+===================================================== -->
+
+<div id="editParcelModal" class="modal">
+
+    <div class="modal-content small-modal">
+
+        <div class="modal-header">
+
+            <h2>
+                <i class="fa-solid fa-pen"></i>
+                Edit Parcel <span id="editParcelIdLabel"></span>
+            </h2>
+
+            <span class="closeEditParcel">&times;</span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="form-group">
+
+                <label>Grower</label>
+
+                <select id="edGrowerSelect"></select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Variety</label>
+
+                <input type="text" id="edVariety" placeholder="e.g. CO 421">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Planting Date</label>
+
+                <input type="date" id="edPlantingDate">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Expected Harvest Date</label>
+
+                <input type="date" id="edHarvestDate">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Ratoon Cycle</label>
+
+                <input type="number" id="edRatoonCycle" min="0">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Estimated Yield (t/ha)</label>
+
+                <input type="number" step="0.01" min="0" id="edYield">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Status</label>
+
+                <div class="status-preview" id="edStatusPreview">
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                id="cancelEditParcelBtn"
+                class="btn-secondary">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                id="saveEditParcelBtn"
+                class="btn-primary">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Save Changes
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!--==========================================
+LIVE MEASUREMENT PANEL
+===========================================-->
+
+<div id="measurePanel" class="measure-panel">
+
+    <h3>Parcel Measurement</h3>
+
+    <div class="measure-row">
+
+        <span>Area</span>
+
+        <strong id="liveArea">0.00 Ha</strong>
+
+    </div>
+
+    <div class="measure-row">
+
+        <span>Perimeter</span>
+
+        <strong id="livePerimeter">0.00 m</strong>
+
+    </div>
+
+    <p class="measure-hint">
+        Click the map to place corners. Right-click, or press
+        Finish, once the boundary is complete.
+    </p>
+
+    <div class="measure-actions">
+
+        <button type="button" id="cancelDrawBtn" class="btn-secondary">
+            Cancel
+        </button>
+
+        <button type="button" id="finishDrawBtn" class="btn-primary">
+            <i class="fa-solid fa-check"></i>
+            Finish Boundary
+        </button>
+
+    </div>
+
+</div>
+
+<!--==================================================
+COORDINATE PICKER RESULT BOX
+===================================================-->
+
+<div id="coordResultBox" class="coord-box">
+
+    <div class="coord-box-header">
+
+        <span>Coordinates</span>
+
+        <button type="button" id="coordCloseBtn">&times;</button>
+
+    </div>
+
+    <div class="coord-row">
+        <span>Lat</span>
+        <strong id="coordLat">-</strong>
+    </div>
+
+    <div class="coord-row">
+        <span>Lng</span>
+        <strong id="coordLng">-</strong>
+    </div>
+
+    <button type="button" id="copyCoordBtn" class="btn-primary">
+        <i class="fa-solid fa-copy"></i>
+        Copy
+    </button>
+
+</div>
+
+<!--==================================================
+ROUTE ANALYSIS PANEL
+===================================================-->
+
+<div id="routePanel" class="modal">
+
+    <div class="modal-content route-modal">
+
+        <div class="modal-header">
+
+            <span>Route Analysis</span>
+
+            <span class="closeRoute" id="routeCloseBtn">&times;</span>
+
+        </div>
+
+        <div class="modal-body">
+
+            <p class="route-target">
+                Destination: Parcel <strong id="routeParcelLabel">-</strong>
+            </p>
+
+            <div class="form-group">
+
+                <label>Starting Point</label>
+
+                <span id="routeStartLabel" class="route-start-label">Not set</span>
+
+                <div class="route-start-actions">
+
+                    <button type="button" id="routeUseLocationBtn" class="btn-secondary">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Use My Location
+                    </button>
+
+                    <button type="button" id="routePickStartBtn" class="btn-secondary">
+                        <i class="fa-solid fa-map-pin"></i>
+                        Click on Map
+                    </button>
+
+                </div>
+
+            </div>
+
+            <button type="button" id="routeCalculateBtn" class="btn-primary route-calculate-btn">
+                <i class="fa-solid fa-route"></i>
+                Calculate Shortest Route
+            </button>
+
+            <div id="routeResult" class="route-result"></div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button" id="routeClearBtn" class="btn-secondary">
+                Clear Route
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!--==================================================
+ENTERPRISE WIZARD
+===================================================-->
+
+<div id="wizardOverlay" class="wizard-overlay">
+
+    <div class="wizard-window">
+
+        <!-- Header -->
+
+        <div class="wizard-header">
+
+            <h2 id="wizardTitle">
+
+                Enterprise Wizard
+
+            </h2>
+
+            <button id="wizardClose">
+
+                &times;
+
+            </button>
+
+        </div>
+
+        <!-- Progress -->
+
+        <div class="wizard-progress">
+
+            <div class="wizard-step active">1</div>
+
+            <div class="wizard-step">2</div>
+
+            <div class="wizard-step">3</div>
+
+            <div class="wizard-step">4</div>
+
+        </div>
+
+        <!-- Content -->
+
+        <div id="wizardContent">
+
+        </div>
+
+        <!-- Footer -->
+
+        <div class="wizard-footer">
+
+            <button id="wizardBack">
+
+                Back
+
+            </button>
+
+            <button id="wizardNext">
+
+                Next
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!--==================================================
+PROJECT SCRIPTS
+===================================================-->
+<!-- Libraries -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
+
+<!-- Core -->
+<script src="js/header.js"></script>
+<script src="js/permissions.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/export-utils.js"></script>
+<script src="js/growers.js"></script>
+<script src="js/table.js"></script>
+<script src="js/sections.js"></script>
+
+<!-- Dashboard -->
+<script src="js/dashboard.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/dashboard-overview.js"></script>
+
+<!-- Map -->
+<script src="js/map.js"></script>
+
+<!-- User actions -->
+<script src="js/search.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/saveGrower.js"></script>
+<script src="js/growerModal.js"></script>
+<!-- Digitizer -->
+<script src="js/digitizer/drawing.js"></script>
+<script src="js/digitizer/preview.js"></script>
+<script src="js/digitizer/measure.js"></script>
+<script src="js/digitizer/toolbar.js"></script>
+<script src="js/digitizer/save.js"></script>
+<script src="js/digitizer/edit.js"></script>
+<script src="js/wizard/wizard.js"></script>
+<script src="js/actions.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/route.js"></script>
+<script src="js/ndvi.js"></script>
+<script src="js/ndvi-upload.js"></script>
+
+</body>
+
+</html>
+

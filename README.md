@@ -1,0 +1,192 @@
+# Sugarcane GIS — "My Farm" (customer PWA)
+
+A single-farmer Progressive Web App built on top of your existing
+Express/Postgres+PostGIS backend. It reuses `server.js` and your
+`parcels` / `ndvi_readings` tables directly — nothing about your
+staff dashboard changes or breaks.
+
+## What's in this folder
+
+```
+server/
+  server.js            <- your original file, with two small edits (see below)
+  farmer-routes.js      <- NEW: farmer login + API, all scoped to one grower
+  public/
+    manifest.json        <- NEW: PWA manifest ("Add to Home Screen")
+    service-worker.js    <- NEW: offline caching + push notifications
+    icons/                <- NEW: app icons
+    farmer/
+      login.html          <- Screen 1: Login
+      index.html          <- Screens 2–11: the app shell (hash-routed)
+      css/app.css
+      js/app.js             <- all screen logic + Leaflet map + GPS capture
+      js/demo-data.js       <- fallback data if the API is unreachable
+    (your existing staff dashboard files — untouched)
+```
+
+### What changed in `server.js`
+1. `requireAuth` now lets anything under `/farmer/*`, `/manifest.json`,
+   `/service-worker.js` and `/icons/*` through *without* the staff
+   session check — the farmer app has its own separate login.
+2. One line near the bottom: `require("./farmer-routes")(app, pool, {...})`.
+3. The Postgres pool now reads `DATABASE_URL` from the environment if
+   present (falls back to your old hardcoded local settings otherwise).
+4. `PORT` now reads `process.env.PORT` (falls back to 3000).
+
+Everything else — your staff login, `/parcels`, `/growers`, `/ndvi`,
+role permissions — is exactly as it was.
+
+### What's new in the database
+`farmer-routes.js` creates these automatically the first time it runs
+(safe to run repeatedly):
+- `farmer_users` — one row per farmer login (linked to `Grower_ID`)
+- `harvest_confirmations` — a log of "harvest status updated" taps
+- three new columns on `parcels`: `Land_Surveyed`, `Survey_Date`, `Survey_Notes`
+
+## How the 12 screens map to the app
+
+| Screen | Where |
+|---|---|
+| 1. Login | `/farmer/login.html` |
+| 2. Home / Dashboard | `#/home` |
+| 3. Farm Overview | `#/farm` |
+| 4. Farm Map | `#/map` |
+| 5. Harvest Updates | `#/harvest` |
+| 6. NDVI & Crop Health | `#/ndvi` |
+| 7. Alerts & Notifications | `#/alerts` |
+| 8. Parcel Details & Coordinates | `#/parcel` |
+| 9. Route to Parcel | `#/route` |
+| 10. Update Farm Information | `#/update-info` |
+| 11. Profile | `#/profile` |
+| 12. Add to Home Screen | shown automatically as a banner (Android: real install prompt; iPhone: "tap Share → Add to Home Screen" instructions) |
+
+Everything is real, not decorative:
+- **NDVI gauge & trend** — read from `ndvi_readings` (your existing table).
+- **Harvest countdown/history** — computed from `Planting_Date` /
+  `Harvest_Due` using the same status logic your staff dashboard uses.
+- **Map & boundary** — the parcel's real PostGIS polygon, drawn with Leaflet.
+- **"Capture from Map"** in Update Farm Information uses the phone's
+  actual GPS (`navigator.geolocation`) — a farmer literally walks their
+  parcel's corners, taps to capture each one, and saves a real,
+  farmer-verified boundary back into `geometry`.
+- **Route to Parcel** uses the phone's GPS + your OSRM proxy for a real
+  driving route, and falls back to a straight-line distance if OSRM is
+  unreachable.
+- **Offline** — the service worker caches the app shell, so it opens
+  instantly with no signal; it caches the last-loaded farm data too, so
+  a farmer in a low-signal field can still see their last-known status.
+
+If the API can't be reached at all (e.g. you're just previewing the UI
+with no backend running), every screen quietly falls back to realistic
+demo data — matching what you described wanting to show a customer
+before the backend is even live.
+
+## Adding new parcels
+
+Farmers can add a parcel from `#/add-parcel` (also reachable from the
+home screen and the More menu) using three boundary methods, all
+saved through the same `POST /farmer/api/parcel` endpoint:
+
+- **Walk (GPS)** — phone's own GPS, tap "Capture point" at each corner.
+  ~3–8 m accuracy; fine for most smallholder plots.
+- **Draw on Map** — tap the satellite basemap to place each corner.
+- **Import File** — for RTK GPS or Total Station surveys. The receiver
+  or survey software does the real accuracy work (cm-level); this app
+  just imports the *result* as a CSV (`lat,lng` per line), GeoJSON
+  Polygon, or KML. A browser can't perform RTK corrections or process
+  raw Total Station angle/distance readings itself — those need to be
+  converted to WGS84 lat/lon in the survey software first, same as any
+  GIS import.
+
+Whichever method is used, the **Area (Ha) is always computed
+server-side** from the real PostGIS geometry (`ST_Area` on a geography
+cast) — never trusted from the client — and the method is stored in
+the new `Boundary_Source` column so your Survey Department can tell a
+phone-GPS boundary from an imported survey at a glance.
+
+## 1. Local test
+
+```bash
+cd server
+npm install
+# either set DATABASE_URL, or leave it unset to use the old localhost:5433 settings
+npm start
+```
+
+Then, once a farmer account exists (see below), open
+`http://localhost:3000/farmer/login.html` on your phone (same Wi-Fi) or
+in a desktop browser's device-emulation mode.
+
+### Creating your first farmer login
+A farmer account must be linked to a `Grower_ID` that already has a
+parcel in your `parcels` table. Create one with:
+
+```bash
+curl -X POST http://localhost:3000/farmer/register \
+  -H "Content-Type: application/json" \
+  -d '{"grower_id":"GWR-00123","name":"John Mwangi","phone":"0712345678","email":"johnmwangi@example.com","password":"farmer123"}'
+```
+
+(In production, wrap this in a small internal tool for your
+plantation manager, or a button in the staff dashboard — it's an open
+endpoint right now, so lock it behind staff auth before going live.)
+
+## 2. Enabling real push notifications (optional, next step)
+
+The service worker already listens for `push` events and shows a
+notification. To actually send one, add `web-push` to the backend:
+
+```bash
+npm install web-push
+npx web-push generate-vapid-keys
+```
+
+Then, in `farmer-routes.js`, store each farmer's push subscription
+(the app can collect it via `PushManager.subscribe()`) in the
+`push_subscription` column already created for you, and call
+`webpush.sendNotification(subscription, payload)` whenever a harvest
+becomes due or an NDVI reading comes in. This is scaffolded but not
+wired up yet, since it needs your own VAPID keys.
+
+---
+
+## You're now doing this from your phone — what changes
+
+You mentioned you used Visual Studio (Code) before. Here's the honest
+mapping of what a phone-based workflow looks like:
+
+- **Editing code**: you don't need VS Code at all for small changes —
+  I (Claude) can keep editing these files for you in chat and hand you
+  updated files each time. For anything you want to poke at yourself
+  on the go, **GitHub's mobile web editor** (open your repo at
+  github.com in your phone's browser, press `.` — or use "github.dev" —
+  to get a lightweight VS Code-in-the-browser) works surprisingly well.
+  There's also **Claude Code**, which you can run from the **Claude
+  mobile app** — it gives you the same "delegate a coding task" flow
+  you'd get on desktop, from your phone.
+- **Version control**: put this project in a GitHub repo. You can
+  create the repo and upload this folder straight from your phone's
+  browser (github.com → New repository → "uploading an existing file").
+- **Hosting the app + database**: since this needs PostGIS (real
+  geometry columns, `ST_AsGeoJSON`, etc.), the two easiest phone-friendly
+  options are:
+  - **Render** (render.com) — connect your GitHub repo, it builds and
+    deploys `server/` automatically on every push. Add a managed
+    Postgres instance from the same dashboard and run
+    `CREATE EXTENSION IF NOT EXISTS postgis;` once via their built-in
+    SQL console.
+  - **Railway** (railway.app) — same idea: GitHub-connected auto
+    deploys, one-click Postgres add-on, works entirely from a mobile
+    browser.
+  - Either way: set the **Root Directory** to `server`, **Build
+    Command** to `npm install`, **Start Command** to `npm start`, and
+    add a `DATABASE_URL` environment variable pointing at the Postgres
+    instance they give you (that's what the `server.js` change above
+    reads automatically).
+- **After deploy**: your customer's PWA lives at
+  `https://your-app.onrender.com/farmer/login.html` — that's the link
+  a farmer opens once, then adds to their home screen. No app store.
+
+If you want, I can also generate the exact `render.yaml` (or a Railway
+config) for one-click setup once you've picked a provider — just say
+which.
