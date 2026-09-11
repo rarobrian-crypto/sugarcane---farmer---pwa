@@ -1,0 +1,16 @@
+{
+  "name": "Sugarcane GIS — My Farm",
+  "short_name": "My Farm",
+  "description": "Track your sugarcane parcel, crop health, and harvest schedule.",
+  "start_url": "/farmer/index.html",
+  "scope": "/farmer/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEF2F6",
+  "theme_color": "#1B5E20",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

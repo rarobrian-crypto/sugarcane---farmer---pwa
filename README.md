@@ -5,16 +5,26 @@ Express/Postgres+PostGIS backend. It reuses `server.js` and your
 `parcels` / `ndvi_readings` tables directly — nothing about your
 staff dashboard changes or breaks.
 
-## What's in this folder
+## What's in this folder (updated — server.js was restructured, see CHANGELOG.md)
 
 ```
 server/
-  server.js            <- your original file, with two small edits (see below)
-  farmer-routes.js      <- NEW: farmer login + API, all scoped to one grower
+  server.js              <- slim composition root, wires everything together
+  lib/
+    auth.js                <- staff sessions, permissions matrix, demo account seeding
+    parcel-status.js       <- shared Status/Crop_Age/Harvest_Status SQL + logic
+    migrate.js              <- runs migrations/*.sql in order, once each, on boot
+  migrations/
+    001_init.sql            <- base schema (users, ndvi_readings, growers, parcels)
+    002_farmer_pwa.sql      <- farmer PWA additions (extra columns, farmer_users, etc)
+  routes/
+    staff-auth.js, growers.js, parcels.js, ndvi.js, route-analysis.js
+  farmer-routes.js        <- farmer PWA's own login + API (staff-gated registration)
   public/
-    manifest.json        <- NEW: PWA manifest ("Add to Home Screen")
-    service-worker.js    <- NEW: offline caching + push notifications
-    icons/                <- NEW: app icons
+    manifest.json        <- PWA manifest ("Add to Home Screen")
+    service-worker.js    <- offline caching + push notifications
+    icons/                <- app icons
+    js/farmer-login.js   <- "Create Login" button on the Growers Directory page
     farmer/
       login.html          <- Screen 1: Login
       index.html          <- Screens 2–11: the app shell (hash-routed)
@@ -22,26 +32,25 @@ server/
       js/app.js             <- all screen logic + Leaflet map + GPS capture
       js/demo-data.js       <- fallback data if the API is unreachable
     (your existing staff dashboard files — untouched)
+CHANGELOG.md              <- one line per deploy, keep it updated
 ```
 
-### What changed in `server.js`
-1. `requireAuth` now lets anything under `/farmer/*`, `/manifest.json`,
-   `/service-worker.js` and `/icons/*` through *without* the staff
-   session check — the farmer app has its own separate login.
-2. One line near the bottom: `require("./farmer-routes")(app, pool, {...})`.
-3. The Postgres pool now reads `DATABASE_URL` from the environment if
-   present (falls back to your old hardcoded local settings otherwise).
-4. `PORT` now reads `process.env.PORT` (falls back to 3000).
+**Adding a schema change in future:** drop a new numbered file in
+`migrations/` (e.g. `003_something.sql`) — never edit `001_init.sql`
+or `002_farmer_pwa.sql` after the fact, since production has already
+run them. The migration runner tracks what's applied in a
+`schema_migrations` table and only runs new files, in order, once
+each. This is also what fixed the "relation parcels does not exist"
+bug from the first deploy — every migration now runs sequentially
+before the server starts accepting requests, instead of several
+independent setup functions racing each other at boot.
 
-Everything else — your staff login, `/parcels`, `/growers`, `/ndvi`,
-role permissions — is exactly as it was.
+**Adding a new route module:** create `routes/whatever.js` exporting
+`function(app, pool, sharedHelpers) { app.get(...); }`, then
+`require("./routes/whatever")(app, pool, { ...whatever it needs })`
+in `server.js`.
 
-### What's new in the database
-`farmer-routes.js` creates these automatically the first time it runs
-(safe to run repeatedly):
-- `farmer_users` — one row per farmer login (linked to `Grower_ID`)
-- `harvest_confirmations` — a log of "harvest status updated" taps
-- three new columns on `parcels`: `Land_Surveyed`, `Survey_Date`, `Survey_Notes`
+
 
 ## How the 12 screens map to the app
 
@@ -119,17 +128,25 @@ in a desktop browser's device-emulation mode.
 
 ### Creating your first farmer login
 A farmer account must be linked to a `Grower_ID` that already has a
-parcel in your `parcels` table. Create one with:
+parcel in your `parcels` table. `POST /farmer/register` now requires
+staff auth (`manage_growers` permission — Growers Department, System
+Administrator, or Management) so it's no longer an open endpoint.
+
+**Normal way:** log into the staff dashboard, open the Growers
+Directory page, and click **"Create Login"** next to a grower. It'll
+prompt for a phone number and a temporary password, and creates the
+farmer account for you — no terminal needed.
+
+**Manual way** (e.g. scripting many accounts at once), from a terminal
+that's already logged into the staff dashboard in the same browser
+session — or curl with a staff session cookie attached:
 
 ```bash
 curl -X POST http://localhost:3000/farmer/register \
   -H "Content-Type: application/json" \
+  -H "Cookie: session_token=YOUR_STAFF_SESSION_TOKEN" \
   -d '{"grower_id":"GWR-00123","name":"John Mwangi","phone":"0712345678","email":"johnmwangi@example.com","password":"farmer123"}'
 ```
-
-(In production, wrap this in a small internal tool for your
-plantation manager, or a button in the staff dashboard — it's an open
-endpoint right now, so lock it behind staff auth before going live.)
 
 ## 2. Enabling real push notifications (optional, next step)
 

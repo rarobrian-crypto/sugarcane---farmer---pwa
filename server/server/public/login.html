@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Sugarcane GIS - Secure Login</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="stylesheet" href="css/login.css">
+
+</head>
+<body>
+
+<div class="login-bg">
+
+    <div class="login-overlay"></div>
+
+    <div class="login-main">
+
+        <!--==============================================
+        LEFT SIDE - BRAND + DEPARTMENTS
+        ===============================================-->
+
+        <div class="login-left">
+
+            <div class="brand-row">
+
+                <img src="images/logo.png" alt="LandScan Associates" class="brand-logo">
+
+                <div>
+                    <h1>SUGARCANE <span>GIS</span></h1>
+                    <p class="brand-subtitle">ENTERPRISE DECISION SUPPORT SYSTEM</p>
+                </div>
+
+            </div>
+
+            <div class="portal-note">
+
+                <div class="portal-note-title">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    SECURE ACCESS PORTAL
+                </div>
+
+                <p>Please select your department to continue to the secure login page.</p>
+
+            </div>
+
+            <div class="dept-grid" id="deptGrid">
+
+                <div class="dept-card" data-department="Growers Department">
+                    <div class="dept-icon green"><i class="fa-solid fa-users"></i></div>
+                    <h3>GROWERS<br>DEPARTMENT</h3>
+                    <p>Manage grower records, farmer information and acreage details.</p>
+                    <button type="button" class="dept-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="dept-card" data-department="Survey Department">
+                    <div class="dept-icon blue"><i class="fa-solid fa-map"></i></div>
+                    <h3>SURVEY<br>DEPARTMENT</h3>
+                    <p>Handle boundary mapping, parcel updates and dispute resolution.</p>
+                    <button type="button" class="dept-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="dept-card" data-department="Harvesting Department">
+                    <div class="dept-icon orange"><i class="fa-solid fa-tractor"></i></div>
+                    <h3>HARVESTING<br>DEPARTMENT</h3>
+                    <p>Plan and monitor harvest schedules and cane maturity.</p>
+                    <button type="button" class="dept-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="dept-card" data-department="Transport Department">
+                    <div class="dept-icon purple"><i class="fa-solid fa-truck"></i></div>
+                    <h3>TRANSPORT<br>DEPARTMENT</h3>
+                    <p>Optimize transport routes, track deliveries and manage logistics.</p>
+                    <button type="button" class="dept-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="dept-card" data-department="Management">
+                    <div class="dept-icon teal"><i class="fa-solid fa-chart-column"></i></div>
+                    <h3>MANAGEMENT</h3>
+                    <p>Access reports, statistics, KPIs and overall performance.</p>
+                    <button type="button" class="dept-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="dept-card" data-department="System Administrator">
+                    <div class="dept-icon gray"><i class="fa-solid fa-gear"></i></div>
+                    <h3>SYSTEM<br>ADMINISTRATOR</h3>
+                    <p>System configuration, user management and security settings.</p>
+                    <button type="button" class="dept-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="dept-card" data-department="Crop Monitoring Department">
+                    <div class="dept-icon green"><i class="fa-solid fa-satellite-dish"></i></div>
+                    <h3>CROP MONITORING<br>DEPARTMENT</h3>
+                    <p>Track NDVI crop health via satellite and drone imagery.</p>
+                    <button type="button" class="dept-arrow"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!--==============================================
+        RIGHT SIDE - LOGIN CARD
+        ===============================================-->
+
+        <div class="login-card">
+
+            <div class="login-card-icon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <h2>Department Login</h2>
+            <p class="login-card-subtitle">Sign in to access your department dashboard</p>
+
+            <form id="loginForm">
+
+                <label>Department</label>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-users"></i>
+                    <select id="loginDepartment">
+                        <option>Growers Department</option>
+                        <option>Survey Department</option>
+                        <option>Harvesting Department</option>
+                        <option>Transport Department</option>
+                        <option>Management</option>
+                        <option>System Administrator</option>
+                        <option>Crop Monitoring Department</option>
+                    </select>
+                </div>
+
+                <label>Username</label>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="loginUsername" placeholder="e.g. grower.admin" autocomplete="username">
+                </div>
+
+                <label>Password</label>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+                    <button type="button" id="togglePassword" class="input-eye">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+
+                <div class="login-row">
+
+                    <label class="remember-label">
+                        <input type="checkbox" id="rememberMe" checked>
+                        Remember me
+                    </label>
+
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+
+                </div>
+
+                <div id="loginError" class="login-error"></div>
+
+                <button type="submit" class="signin-btn" id="signInBtn">Sign In</button>
+
+                <div class="or-divider"><span>OR</span></div>
+
+                <button type="button" class="sso-btn">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Sign in with Single Sign-On (SSO)
+                </button>
+
+            </form>
+
+            <div class="secure-footer">
+                <i class="fa-solid fa-lock"></i>
+                Your connection is secure and encrypted
+            </div>
+
+        </div>
+
+    </div>
+
+    <!--==============================================
+    BOTTOM FEATURE BAR
+    ===============================================-->
+
+    <div class="feature-bar">
+
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+                <strong>Role-Based Access</strong>
+                <p>Secure access for each department</p>
+            </div>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fa-solid fa-lock"></i></div>
+            <div>
+                <strong>Data Protection</strong>
+                <p>Enterprise-grade security and encryption</p>
+            </div>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fa-solid fa-cloud"></i></div>
+            <div>
+                <strong>Centralized System</strong>
+                <p>All data in one intelligent GIS platform</p>
+            </div>
+        </div>
+
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fa-regular fa-clock"></i></div>
+            <div>
+                <strong>Real-Time Access</strong>
+                <p>Access information anytime, anywhere</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>
