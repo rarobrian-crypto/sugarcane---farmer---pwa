@@ -1084,6 +1084,12 @@ function dismissInstall() {
 // ---------- Boot ----------
 async function boot() {
   if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!window.__farmerAppReloadedForUpdate) {
+        window.__farmerAppReloadedForUpdate = true;
+        location.reload();
+      }
+    });
     navigator.serviceWorker.register("/service-worker.js").catch(() => {});
   }
   await loadFarmerData();
