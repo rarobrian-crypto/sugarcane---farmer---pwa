@@ -281,7 +281,7 @@ function viewHome() {
     ${state.parcels.slice(0, 3).map((parcel) => `
       <div class="farm-card" onclick="switchParcel('${parcel.Parcel_ID}')">
         <div class="farm-thumb" style="background:linear-gradient(135deg,#236b46,#123b29);">
-          <div class="rows"></div><span class="thumb-label">SURVEYED PARCEL</span>
+          <div class="rows" style="background-image:repeating-linear-gradient(115deg,rgba(255,255,255,.22) 0 3px,transparent 3px 9px);"></div><span aria-hidden="true" style="position:absolute;inset:0;display:grid;place-items:center;font-size:21px;">🌱</span>
         </div>
         <div class="farm-body">
           <strong>${parcel.Parcel_ID}</strong>
