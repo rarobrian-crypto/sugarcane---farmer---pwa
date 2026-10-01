@@ -50,7 +50,7 @@ async function doLogin(){
     });
     const data = await res.json();
     if(data.success){
-      location.href = '/farmer/index.html';
+      location.href = '/farmer/index.html' + (new URLSearchParams(location.search).get('client-preview') === '1' ? '?client-preview=1' : '');
     } else {
       alert(data.error || 'Login failed.');
     }
