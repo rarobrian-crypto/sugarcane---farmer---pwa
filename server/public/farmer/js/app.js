@@ -245,74 +245,64 @@ function sparkline(points, height = 60) {
 // ---------- Views ----------
 
 function viewHome() {
-  const f = state.farmer, w = state.weather;
-  const totalArea = state.parcels.reduce((s, p) => s + Number(p.Area_Ha || 0), 0);  const urgentAlerts = state.alerts.filter((a) => a.type === "harvest" || a.severity === "urgent").length;
-
+  const f = state.farmer || { name: "Farmer" };
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Morning" : hour < 17 ? "Afternoon" : "Evening";
+  const totalArea = state.parcels.reduce((sum, parcel) => sum + Number(parcel.Area_Ha || 0), 0);
+  const urgentAlerts = state.alerts.filter((a) => a.type === "harvest" || a.severity === "urgent").length;
+  const initialsText = String(f.name || "F").trim().split(/\\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
   return `
   <div class="home-header">
-    <div class="avatar-photo">${initials(f.name)}</div>
+    <div class="avatar-photo">${initialsText}</div>
     <div class="who">
-      <small>Good ${greetingPart()},</small>
+      <small>Good ${greeting},</small>
       <h2>${f.name}</h2>
       <div class="farmer-id">LANDSCAN · ${state.parcels.length} mapped parcels</div>
     </div>
-    <button class="bell-btn" onclick="go('/alerts')">
+    <button class="bell-btn" onclick="go('/alerts')" aria-label="Alerts">
       🔔${urgentAlerts ? `<span class="badge-dot">${urgentAlerts}</span>` : ""}
     </button>
   </div>
-
   <div class="content no-pad-top bleed">
-
-    ${w ? `
-    <div class="weather-card ${w.temp <= 18 ? "cool" : ""}">
-      <div class="wicon">${w.icon}</div>
-      <div class="wmeta">
-        <strong>${w.label}</strong>
-        <span class="wloc">📍 ${w.location}</span>
-      </div>
-      <div class="wtemp">${w.temp}°C</div>
-    </div>` : ""}
-
     <div class="stat-grid">
       <div class="stat-tile"><div class="sicon">🌱</div><strong>${state.parcels.length}</strong><span>Farms mapped</span></div>
       <div class="stat-tile"><div class="sicon">📏</div><strong>${totalArea.toFixed(1)} ha</strong><span>Mapped area (est.)</span></div>
-      <div class="stat-tile"><div class="sicon">🌾</div><strong>—</strong><span>Cane data pending</span></div>
+      <div class="stat-tile"><div class="sicon">🌾</div><strong>—</strong><span>Crop data pending</span></div>
     </div>
-
     <div class="card intelligence-card">
-      <div class="intelligence-kicker">ONE SPATIAL VIEW</div>
+      <div class="intelligence-kicker">YOUR FARM PORTFOLIO</div>
       <h3>A clear view of your mapped land</h3>
       <p>Explore parcel boundaries and build your farm record in one place.</p>
       <div class="intelligence-status"><span class="status-dot"></span>${state.parcels.length} mapped parcel boundaries available</div>
       <div class="intelligence-footnote">Crop performance and harvest details appear when verified records are added to your account.</div>
       <button class="btn btn-primary mt-14" onclick="go('/map')">Explore farm map</button>
     </div>
-    <div class="pilot-card">
-      <div class="intelligence-kicker">YOUR FARM PORTFOLIO</div>
-      <div class="pilot-steps"><b>Assess</b><span>›</span><b>Pilot</b><span>›</span><b>Validate</b><span>›</span><b>Scale</b></div>
-      <p>Open a mapped parcel to review its boundary, area, and location.</p>
-    </div>
-
-    <div class="section-row">
-      <h3>My Farms</h3>
-      <a onclick="go('/farms')">View All ›</a>
-    </div>
-    ${state.parcels.slice(0, 2).map((p) => farmCardHtml(p)).join("")}
-
+    <div class="section-row"><h3>My Farms</h3><a onclick="go('/parcels')">View All ›</a></div>
+    ${state.parcels.slice(0, 3).map((parcel) => `
+      <div class="farm-card" onclick="switchParcel('${parcel.Parcel_ID}')">
+        <div class="farm-thumb" style="background:linear-gradient(135deg,#236b46,#123b29);">
+          <div class="rows"></div><span class="thumb-label">SURVEYED PARCEL</span>
+        </div>
+        <div class="farm-body">
+          <strong>${parcel.Parcel_ID}</strong>
+          <div class="sub">${Number(parcel.Area_Ha || 0).toFixed(2)} ha</div>
+          <div class="chips"><span class="badge growing">● Boundary mapped</span><span class="ndvi-chip">Crop data needed</span></div>
+        </div>
+        <span class="farm-arrow">›</span>
+      </div>`).join("")}
     <div class="section-row" style="margin-top:6px;"><h3>Quick Actions</h3></div>
     <div class="quick-grid" style="margin:0 16px 4px;">
-      <a onclick="go('/cycle')"><span class="qicon" style="background:#6D4C41;">🌾</span>Crop Record</a>
-      <a onclick="go('/update-info')"><span class="qicon" style="background:#8E24AA;">📝</span>Update Info</a>
-      <a onclick="go('/add-parcel')"><span class="qicon" style="background:#D84315;">➕</span>Add Farm</a>
-      <a onclick="go('/deliveries')"><span class="qicon" style="background:#00897B;">🚚</span>Deliveries</a>
-      <a onclick="go('/route')"><span class="qicon" style="background:#1E88E5;">📍</span>Route</a>
+      <a onclick="go('/farm')"><span class="qicon" style="background:#6D4C41;">🌾</span>Farm details</a>
+      <a onclick="go('/map')"><span class="qicon" style="background:#1E88E5;">🗺️</span>Farm map</a>
+      <a onclick="go('/update-info')"><span class="qicon" style="background:#8E24AA;">📝</span>Update info</a>
+      <a onclick="go('/add-parcel')"><span class="qicon" style="background:#D84315;">➕</span>Add farm</a>
+      <a onclick="go('/route')"><span class="qicon" style="background:#00897B;">📍</span>Route</a>
       <a onclick="go('/profile')"><span class="qicon" style="background:#455A64;">👤</span>Profile</a>
     </div>
     ${demoNote()}
   </div>
   ${bottomNav("/home")}`;
 }
-
 function statusBadgeClass(status) {
   if (status === "Growing") return "growing";
   if (status === "Mature" || status === "Harvested") return "ready";
