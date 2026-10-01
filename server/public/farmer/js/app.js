@@ -246,9 +246,7 @@ function sparkline(points, height = 60) {
 
 function viewHome() {
   const f = state.farmer, w = state.weather;
-  const totalArea = state.parcels.reduce((s, p) => s + Number(p.Area_Ha || 0), 0);
-  const readyCount = state.parcels.filter(isReadyForHarvest).length;
-  const urgentAlerts = state.alerts.filter((a) => a.type === "harvest" || a.severity === "urgent").length;
+  const totalArea = state.parcels.reduce((s, p) => s + Number(p.Area_Ha || 0), 0);  const urgentAlerts = state.alerts.filter((a) => a.type === "harvest" || a.severity === "urgent").length;
 
   return `
   <div class="home-header">
