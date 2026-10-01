@@ -1,3 +1,5 @@
+const CLIENT_FARM_DATA = {"parcels":[{"Parcel_ID":"Makina","Grower_ID":null,"Area_Ha":1.73,"Variety":null,"Status":"Mapped","Harvest_Status":null,"ndvi":null},{"Parcel_ID":"Otimon","Grower_ID":null,"Area_Ha":1.32,"Variety":null,"Status":"Mapped","Harvest_Status":null,"ndvi":null},{"Parcel_ID":"South Teso","Grower_ID":null,"Area_Ha":23.32,"Variety":null,"Status":"Mapped","Harvest_Status":null,"ndvi":null},{"Parcel_ID":"Obuccun","Grower_ID":null,"Area_Ha":11.53,"Variety":null,"Status":"Mapped","Harvest_Status":null,"ndvi":null},{"Parcel_ID":"Ngelechom","Grower_ID":null,"Area_Ha":6.16,"Variety":null,"Status":"Mapped","Harvest_Status":null,"ndvi":null}],"parcelDetails":{"Makina":{"Parcel_ID":"Makina","Grower_ID":null,"Area_Ha":1.73,"Variety":null,"Planting_Date":null,"Harvest_Due":null,"Status":"Mapped","Ratoon_Cycle":null,"Estimated_Tonnage":null,"center":{"lat":0.465603,"lng":34.197781},"boundary":[[0.465226,34.196019],[0.464833,34.196077],[0.465071,34.19665],[0.465245,34.197223],[0.465688,34.198562],[0.46597,34.199482],[0.466373,34.199542],[0.46625,34.199127],[0.466068,34.198406],[0.46574,34.197314],[0.465682,34.197031],[0.465513,34.197087],[0.465224,34.196031]],"land_surveyed":true,"survey_date":null,"survey_notes":"Boundary imported from makina coods final.csv; converted from UTM Zone 36N / WGS84. Area is estimated from the supplied polygon. Review the boundary against the client’s map imagery.","coordinates_table":[[0.465226,34.196019],[0.464833,34.196077],[0.465071,34.19665],[0.465245,34.197223],[0.465688,34.198562],[0.46597,34.199482],[0.466373,34.199542],[0.46625,34.199127],[0.466068,34.198406],[0.46574,34.197314],[0.465682,34.197031],[0.465513,34.197087],[0.465224,34.196031]]},"Otimon":{"Parcel_ID":"Otimon","Grower_ID":null,"Area_Ha":1.32,"Variety":null,"Planting_Date":null,"Harvest_Due":null,"Status":"Mapped","Ratoon_Cycle":null,"Estimated_Tonnage":null,"center":{"lat":0.44085,"lng":34.304229},"boundary":[[0.441652,34.303825],[0.441442,34.303881],[0.441278,34.303922],[0.441193,34.30396],[0.44102,34.304006],[0.440824,34.304063],[0.44053,34.304114],[0.440221,34.304186],[0.439958,34.304244],[0.43975,34.304283],[0.439564,34.304337],[0.439752,34.304744],[0.439888,34.30474],[0.440612,34.30456],[0.441013,34.304444],[0.44121,34.304397],[0.442135,34.304087],[0.442045,34.303904],[0.441951,34.303715]],"land_surveyed":true,"survey_date":null,"survey_notes":"Boundary imported from otimon coods final .csv; converted from UTM Zone 36N / WGS84. Area is estimated from the supplied polygon. Review the boundary against the client’s map imagery.","coordinates_table":[[0.441652,34.303825],[0.441442,34.303881],[0.441278,34.303922],[0.441193,34.30396],[0.44102,34.304006],[0.440824,34.304063],[0.44053,34.304114],[0.440221,34.304186],[0.439958,34.304244],[0.43975,34.304283],[0.439564,34.304337],[0.439752,34.304744],[0.439888,34.30474],[0.440612,34.30456],[0.441013,34.304444],[0.44121,34.304397],[0.442135,34.304087],[0.442045,34.303904],[0.441951,34.303715]]},"South Teso":{"Parcel_ID":"South Teso","Grower_ID":null,"Area_Ha":23.32,"Variety":null,"Planting_Date":null,"Harvest_Due":null,"Status":"Mapped","Ratoon_Cycle":null,"Estimated_Tonnage":null,"center":{"lat":0.562138,"lng":34.148031},"boundary":[[0.561984,34.145045],[0.562198,34.145065],[0.562396,34.145123],[0.562559,34.145462],[0.562837,34.145998],[0.562957,34.146277],[0.563114,34.146581],[0.563144,34.146684],[0.563285,34.147111],[0.563341,34.147334],[0.563452,34.147696],[0.563724,34.148558],[0.564147,34.149709],[0.564359,34.15011],[0.564513,34.150585],[0.564596,34.150894],[0.564642,34.151182],[0.564706,34.151429],[0.564612,34.151458],[0.564509,34.151466],[0.564452,34.151478],[0.56422,34.151495],[0.563989,34.151485],[0.563845,34.151497],[0.563736,34.151523],[0.563605,34.151515],[0.563489,34.15153],[0.563357,34.151529],[0.563123,34.151527],[0.562957,34.151507],[0.562847,34.151474],[0.562687,34.151431],[0.562411,34.151348],[0.562296,34.151306],[0.562152,34.151285],[0.561973,34.151212],[0.561915,34.151154],[0.561823,34.151147],[0.561731,34.150818],[0.561613,34.150395],[0.561556,34.150192],[0.561474,34.149939],[0.561407,34.149779],[0.561325,34.14958],[0.561138,34.149127],[0.560715,34.14811],[0.560484,34.147575],[0.56033,34.147148],[0.560123,34.146687],[0.559977,34.14644],[0.559853,34.146225],[0.559689,34.145832],[0.559632,34.145637],[0.559624,34.145427],[0.559649,34.14536],[0.559643,34.145212],[0.559617,34.145127],[0.55957,34.144873],[0.559683,34.144856],[0.559763,34.144842],[0.55982,34.144836],[0.559882,34.144801],[0.560014,34.144656],[0.560095,34.144561],[0.560228,34.144531],[0.560493,34.144531],[0.560539,34.144694],[0.560591,34.144844],[0.560674,34.144898],[0.560766,34.144928],[0.560922,34.144948],[0.561008,34.14493],[0.561149,34.144944]],"land_surveyed":true,"survey_date":null,"survey_notes":"Boundary imported from southteso coods final .csv; converted from UTM Zone 36N / WGS84. Area is estimated from the supplied polygon. Review the boundary against the client’s map imagery.","coordinates_table":[[0.561984,34.145045],[0.562198,34.145065],[0.562396,34.145123],[0.562559,34.145462],[0.562837,34.145998],[0.562957,34.146277],[0.563114,34.146581],[0.563144,34.146684],[0.563285,34.147111],[0.563341,34.147334],[0.563452,34.147696],[0.563724,34.148558],[0.564147,34.149709],[0.564359,34.15011],[0.564513,34.150585],[0.564596,34.150894],[0.564642,34.151182],[0.564706,34.151429],[0.564612,34.151458],[0.564509,34.151466],[0.564452,34.151478],[0.56422,34.151495],[0.563989,34.151485],[0.563845,34.151497],[0.563736,34.151523],[0.563605,34.151515],[0.563489,34.15153],[0.563357,34.151529],[0.563123,34.151527],[0.562957,34.151507],[0.562847,34.151474],[0.562687,34.151431],[0.562411,34.151348],[0.562296,34.151306],[0.562152,34.151285],[0.561973,34.151212],[0.561915,34.151154],[0.561823,34.151147],[0.561731,34.150818],[0.561613,34.150395],[0.561556,34.150192],[0.561474,34.149939],[0.561407,34.149779],[0.561325,34.14958],[0.561138,34.149127],[0.560715,34.14811],[0.560484,34.147575],[0.56033,34.147148],[0.560123,34.146687],[0.559977,34.14644],[0.559853,34.146225],[0.559689,34.145832],[0.559632,34.145637],[0.559624,34.145427],[0.559649,34.14536],[0.559643,34.145212],[0.559617,34.145127],[0.55957,34.144873],[0.559683,34.144856],[0.559763,34.144842],[0.55982,34.144836],[0.559882,34.144801],[0.560014,34.144656],[0.560095,34.144561],[0.560228,34.144531],[0.560493,34.144531],[0.560539,34.144694],[0.560591,34.144844],[0.560674,34.144898],[0.560766,34.144928],[0.560922,34.144948],[0.561008,34.14493],[0.561149,34.144944]]},"Obuccun":{"Parcel_ID":"Obuccun","Grower_ID":null,"Area_Ha":11.53,"Variety":null,"Planting_Date":null,"Harvest_Due":null,"Status":"Mapped","Ratoon_Cycle":null,"Estimated_Tonnage":null,"center":{"lat":0.561692,"lng":34.134363},"boundary":[[0.563295,34.130986],[0.563067,34.131593],[0.562979,34.131927],[0.562925,34.132209],[0.56295,34.132298],[0.562831,34.132567],[0.562749,34.132801],[0.562705,34.132946],[0.562647,34.133129],[0.562565,34.133333],[0.562502,34.133547],[0.562453,34.133756],[0.5624,34.133903],[0.562376,34.13396],[0.562305,34.134188],[0.562234,34.13437],[0.562155,34.134611],[0.562126,34.13471],[0.562074,34.134909],[0.562036,34.135007],[0.56198,34.135181],[0.561928,34.135293],[0.561862,34.135474],[0.561843,34.135567],[0.561806,34.135708],[0.561746,34.135827],[0.561683,34.136004],[0.561632,34.136195],[0.561566,34.136394],[0.561526,34.136529],[0.561401,34.136883],[0.561344,34.137117],[0.561095,34.137845],[0.560981,34.138151],[0.560897,34.138315],[0.560849,34.138233],[0.56082,34.138198],[0.560732,34.13811],[0.560651,34.138045],[0.560605,34.1379],[0.560577,34.13784],[0.560576,34.137791],[0.56056,34.137767],[0.560483,34.137731],[0.560429,34.13772],[0.560366,34.137732],[0.560325,34.137774],[0.560264,34.137822],[0.560214,34.137884],[0.560088,34.137816],[0.56015,34.137571],[0.560403,34.136986],[0.560583,34.136499],[0.560758,34.136054],[0.560773,34.135835],[0.560882,34.135287],[0.561038,34.134497],[0.561064,34.134372],[0.561161,34.13375],[0.561163,34.133214],[0.561127,34.132584],[0.561137,34.132423],[0.561203,34.132192],[0.561325,34.131849],[0.561357,34.13177],[0.561361,34.131725],[0.561453,34.131313],[0.561717,34.130412]],"land_surveyed":true,"survey_date":null,"survey_notes":"Boundary imported from obuccun coods final.csv; converted from UTM Zone 36N / WGS84. Area is estimated from the supplied polygon. Review the boundary against the client’s map imagery.","coordinates_table":[[0.563295,34.130986],[0.563067,34.131593],[0.562979,34.131927],[0.562925,34.132209],[0.56295,34.132298],[0.562831,34.132567],[0.562749,34.132801],[0.562705,34.132946],[0.562647,34.133129],[0.562565,34.133333],[0.562502,34.133547],[0.562453,34.133756],[0.5624,34.133903],[0.562376,34.13396],[0.562305,34.134188],[0.562234,34.13437],[0.562155,34.134611],[0.562126,34.13471],[0.562074,34.134909],[0.562036,34.135007],[0.56198,34.135181],[0.561928,34.135293],[0.561862,34.135474],[0.561843,34.135567],[0.561806,34.135708],[0.561746,34.135827],[0.561683,34.136004],[0.561632,34.136195],[0.561566,34.136394],[0.561526,34.136529],[0.561401,34.136883],[0.561344,34.137117],[0.561095,34.137845],[0.560981,34.138151],[0.560897,34.138315],[0.560849,34.138233],[0.56082,34.138198],[0.560732,34.13811],[0.560651,34.138045],[0.560605,34.1379],[0.560577,34.13784],[0.560576,34.137791],[0.56056,34.137767],[0.560483,34.137731],[0.560429,34.13772],[0.560366,34.137732],[0.560325,34.137774],[0.560264,34.137822],[0.560214,34.137884],[0.560088,34.137816],[0.56015,34.137571],[0.560403,34.136986],[0.560583,34.136499],[0.560758,34.136054],[0.560773,34.135835],[0.560882,34.135287],[0.561038,34.134497],[0.561064,34.134372],[0.561161,34.13375],[0.561163,34.133214],[0.561127,34.132584],[0.561137,34.132423],[0.561203,34.132192],[0.561325,34.131849],[0.561357,34.13177],[0.561361,34.131725],[0.561453,34.131313],[0.561717,34.130412]]},"Ngelechom":{"Parcel_ID":"Ngelechom","Grower_ID":null,"Area_Ha":6.16,"Variety":null,"Planting_Date":null,"Harvest_Due":null,"Status":"Mapped","Ratoon_Cycle":null,"Estimated_Tonnage":null,"center":{"lat":0.594955,"lng":34.165258},"boundary":[[0.593217,34.164843],[0.59342,34.164713],[0.593471,34.164772],[0.594004,34.164565],[0.594457,34.164421],[0.594864,34.164296],[0.595036,34.164215],[0.595289,34.164089],[0.595446,34.164007],[0.595462,34.164188],[0.595578,34.164333],[0.595654,34.164343],[0.595867,34.164363],[0.596017,34.164355],[0.596209,34.164265],[0.596359,34.164199],[0.596507,34.164171],[0.596636,34.164108],[0.596693,34.16414],[0.596675,34.164211],[0.596618,34.164282],[0.596547,34.164387],[0.596537,34.164466],[0.596544,34.16451],[0.59649,34.164617],[0.596478,34.16475],[0.596247,34.164961],[0.596157,34.165347],[0.595895,34.165671],[0.595705,34.165895],[0.595126,34.166326],[0.594927,34.166488],[0.59461,34.166509],[0.594373,34.166462],[0.594194,34.166389],[0.594176,34.166138],[0.593751,34.166084]],"land_surveyed":true,"survey_date":null,"survey_notes":"Boundary imported from ngelechom coods final .csv; converted from UTM Zone 36N / WGS84. Area is estimated from the supplied polygon. Review the boundary against the client’s map imagery. Updated from the corrected final Ngelechom survey file; its supplied point order is preserved.","coordinates_table":[[0.593217,34.164843],[0.59342,34.164713],[0.593471,34.164772],[0.594004,34.164565],[0.594457,34.164421],[0.594864,34.164296],[0.595036,34.164215],[0.595289,34.164089],[0.595446,34.164007],[0.595462,34.164188],[0.595578,34.164333],[0.595654,34.164343],[0.595867,34.164363],[0.596017,34.164355],[0.596209,34.164265],[0.596359,34.164199],[0.596507,34.164171],[0.596636,34.164108],[0.596693,34.16414],[0.596675,34.164211],[0.596618,34.164282],[0.596547,34.164387],[0.596537,34.164466],[0.596544,34.16451],[0.59649,34.164617],[0.596478,34.16475],[0.596247,34.164961],[0.596157,34.165347],[0.595895,34.165671],[0.595705,34.165895],[0.595126,34.166326],[0.594927,34.166488],[0.59461,34.166509],[0.594373,34.166462],[0.594194,34.166389],[0.594176,34.166138],[0.593751,34.166084]]}}};
+
 /* =========================================================
    Sugarcane GIS — My Farm (farmer PWA)
    Single-page app: hash router + fetch calls to the real
@@ -14,11 +16,16 @@ const state = {
   alerts: [],
   boundaryCapture: [], // points captured this session, before save (edit existing boundary)
   newParcel: { points: [], method: "gps_walk", variety: "", planting_date: "" }, // Add Parcel draft
-  usingDemo: false
+  usingDemo: false,
+  clientFarmDemo: false
 };
 
 // ---------- API wrapper ----------
 async function api(path, opts = {}) {
+  if (state.clientFarmDemo && opts.method && !["GET", "HEAD"].includes(opts.method.toUpperCase()) && path !== "/farmer/logout") {
+    toast("This client farm preview is read-only.");
+    return null;
+  }
   try {
     const res = await fetch(path, {
       credentials: "include",
@@ -37,22 +44,37 @@ async function api(path, opts = {}) {
 async function loadFarmerData() {
   const me = await api("/farmer/api/me");
   state.farmer = me?.farmer || DEMO.farmer;
+  if (me?.farmer && new URLSearchParams(location.search).get("client-preview") === "1" && typeof CLIENT_FARM_DATA !== "undefined") {
+    state.clientFarmDemo = true;
+    state.parcels = CLIENT_FARM_DATA.parcels;
+    state.parcel = CLIENT_FARM_DATA.parcelDetails["Makina"];
+    state.ndvi = { current: null, status: "Not supplied", trend: [] };
+    state.harvest = { status: "Not supplied", days_to_harvest: null, estimated_yield: null, harvest_date: null, history: [] };
+    state.alerts = [];
+    state.usingDemo = false;
+    return;
+  }
   state.parcel = me?.parcel || DEMO.parcel;
-
   const ndvi = await api(`/farmer/api/parcel/${state.parcel.Parcel_ID}/ndvi`);
   state.ndvi = ndvi || DEMO.ndvi;
-
   const harvest = await api(`/farmer/api/parcel/${state.parcel.Parcel_ID}/harvest`);
   state.harvest = harvest || DEMO.harvest;
-
   const alerts = await api("/farmer/api/alerts");
   state.alerts = alerts || DEMO.alerts;
-
   const parcels = await api("/farmer/api/parcels");
   state.parcels = parcels || [state.parcel];
 }
 
 async function switchParcel(id) {
+  if (state.clientFarmDemo) {
+    const selected = CLIENT_FARM_DATA.parcelDetails[id];
+    if (!selected) return;
+    state.parcel = selected;
+    state.ndvi = { current: null, status: "Not supplied", trend: [] };
+    state.harvest = { status: "Not supplied", days_to_harvest: null, estimated_yield: null, harvest_date: null, history: [] };
+    go("/farm");
+    return;
+  }
   const p = await api(`/farmer/api/parcel/${id}`);
   if (p) state.parcel = p;
   const ndvi = await api(`/farmer/api/parcel/${id}/ndvi`);
@@ -168,6 +190,7 @@ function toast(msg) {
 }
 
 function demoNote() {
+  if (state.clientFarmDemo) return `<p class="small muted center-text mt-8">Client preview · five surveyed boundaries shown. Crop, yield and NDVI records were not supplied.</p>`;
   return state.usingDemo
     ? `<p class="small muted center-text mt-8">Showing demo data — connect the backend to see your live farm.</p>`
     : "";
@@ -175,6 +198,8 @@ function demoNote() {
 
 // ---------- Gauge / sparkline helpers ----------
 function ndviGauge(value) {
+  if (value == null || !Number.isFinite(Number(value))) return `<div class="gauge"><div class="center"><strong>—</strong><span>Not supplied</span></div></div>`;
+  value = Number(value);
   const pct = Math.max(0, Math.min(1, value));
   const r = 40, c = 2 * Math.PI * r;
   const offset = c * (1 - pct);
@@ -221,7 +246,8 @@ function sparkline(points, height = 60) {
 
 function viewHome() {
   const f = state.farmer, p = state.parcel, h = state.harvest;
-  const dueSoon = h && h.days_to_harvest <= 30;
+  const dueSoon = h && h.days_to_harvest != null && h.days_to_harvest <= 30;
+  const totalArea = state.parcels.reduce((sum, parcel) => sum + Number(parcel.Area_Ha || 0), 0);
   return `
   <div class="greeting-bar">
     <div class="top-row">
@@ -237,8 +263,8 @@ function viewHome() {
     <div class="card" style="margin-top:18px;" onclick="go('/farm')">
       <div class="card-row">
         <div>
-          <h3 style="margin-bottom:2px;">My Farm</h3>
-          <div class="small muted">🌱 1 Parcel &nbsp; 📏 ${p.Area_Ha} Ha</div>
+          <h3 style="margin-bottom:2px;">Client Farms</h3>
+          <div class="small muted">🌱 ${state.parcels.length} parcels &nbsp; 📏 ${totalArea.toFixed(2)} ha mapped</div>
         </div>
         <span style="color:#9CA3AF;">›</span>
       </div>
@@ -287,7 +313,7 @@ function viewFarm() {
         <div style="display:flex;gap:12px;">
           <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#A5D6A7,#2E7D32);"></div>
           <div>
-            <h3 style="color:var(--text);font-size:15px;margin-bottom:2px;">Parcel ${p.Parcel_ID}</h3>
+            <h3 style="color:var(--text);font-size:15px;margin-bottom:2px;">${state.clientFarmDemo ? p.Parcel_ID : `Parcel ${p.Parcel_ID}`}</h3>
             <div class="small muted">${p.Area_Ha ?? "—"} Ha</div>
             <span class="badge growing" style="margin-top:6px;display:inline-block;">● ${p.Status}</span>
           </div>
@@ -320,9 +346,18 @@ function viewFarm() {
 }
 
 function viewMap() {
+  const selected = state.parcel;
   return `
   ${topBar("Farm Map")}
+  <style>.farm-map-picker{position:relative;z-index:3;display:flex;flex-direction:column;gap:6px;padding:12px 14px;margin:0 0 10px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}.farm-map-picker label{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.farm-map-picker select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--text);font:inherit;font-weight:700}.farm-map-picker span{font-size:11px;color:var(--muted)}.leaflet-control-layers{border:0!important;border-radius:10px!important;box-shadow:0 2px 12px rgba(20,40,30,.2)!important;font-size:12px}</style>
   <div class="content" style="position:relative;">
+    <div class="farm-map-picker">
+      <label for="map-parcel-select">Client farm boundary</label>
+      <select id="map-parcel-select" onchange="switchParcel(this.value).then(() => go('/map'))">
+        ${state.parcels.map((farm) => `<option value="${farm.Parcel_ID}" ${farm.Parcel_ID === selected.Parcel_ID ? "selected" : ""}>${farm.Parcel_ID}</option>`).join("")}
+      </select>
+      <span>${selected.boundary.length} surveyed points · WGS 84</span>
+    </div>
     <div id="leaflet-map"></div>
     <div class="map-fab-col">
       <button class="map-fab" onclick="mapObj && mapObj.zoomIn()">+</button>
@@ -330,8 +365,8 @@ function viewMap() {
       <button class="map-fab" onclick="locateMe()">🧭</button>
     </div>
     <div class="card map-info-card">
-      <h3 style="color:var(--text);font-size:15px;">Parcel ${state.parcel.Parcel_ID}</h3>
-      <div class="small muted mt-8">${state.parcel.Area_Ha} Ha</div>
+      <h3 style="color:var(--text);font-size:15px;">${state.parcel.Parcel_ID}</h3>
+      <div class="small muted mt-8">${Number(state.parcel.Area_Ha).toFixed(2)} ha · ${state.parcel.boundary.length} survey points</div>
       <div class="small muted">Lat: ${state.parcel.center.lat} &nbsp; Lon: ${state.parcel.center.lng}</div>
       <button class="btn btn-primary mt-14" onclick="go('/route')">📍 Get Directions</button>
     </div>
@@ -349,7 +384,7 @@ function viewRoute() {
     <div class="card mt-14">
       <div class="card-row">
         <div>
-          <div class="small muted">Your Location → Parcel ${p.Parcel_ID}</div>
+          <div class="small muted">Your Location → ${state.clientFarmDemo ? p.Parcel_ID : `Parcel ${p.Parcel_ID}`}</div>
           <strong id="route-dist">Calculating…</strong>
         </div>
         <span>🚗</span>
@@ -525,7 +560,7 @@ function viewParcelsList() {
         <div class="list-item" style="padding:14px 16px;${i === 0 ? "" : ""}" onclick="switchParcel('${p.Parcel_ID}')">
           <div class="dot-icon" style="background:var(--primary);">🌱</div>
           <div class="body">
-            <strong>Parcel ${p.Parcel_ID}</strong>
+            <strong>${state.clientFarmDemo ? p.Parcel_ID : `Parcel ${p.Parcel_ID}`}</strong>
             <p>${p.Variety || "—"} · ${p.Area_Ha ?? "—"} Ha · ${p.Status || ""}</p>
           </div>
           <span style="color:#9CA3AF;align-self:center;">›</span>
@@ -941,20 +976,24 @@ function afterRender(path) {
 function initMap(path) {
   const el = document.getElementById("leaflet-map");
   if (!el || typeof L === "undefined") return;
+  if (mapObj) { mapObj.remove(); mapObj = null; }
   const p = state.parcel;
-  mapObj = L.map(el, { zoomControl: false }).setView([p.center.lat, p.center.lng], 16);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "© OpenStreetMap contributors",
+  mapObj = L.map(el, { zoomControl: false });
+  const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
-  }).addTo(mapObj);
-
+  });
+  const satellite = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    { attribution: "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics", maxZoom: 19 }
+  );
+  (state.clientFarmDemo ? satellite : streets).addTo(mapObj);
+  L.control.layers({ "OpenStreetMap": streets, "Satellite imagery": satellite }, null, { position: "topright", collapsed: false }).addTo(mapObj);
   const boundary = p.boundary.map((c) => [c[0], c[1]]);
-  L.polygon(boundary, { color: "#2E7D32", fillColor: "#66BB6A", fillOpacity: 0.35, weight: 3 }).addTo(mapObj);
-  boundary.forEach((c) => L.circleMarker(c, { radius: 4, color: "#1B5E20", fillColor: "#fff", fillOpacity: 1 }).addTo(mapObj));
-
-  if (path === "/route") {
-    drawRoute(p);
-  }
+  const polygon = L.polygon(boundary, { color: "#0B6E3B", fillColor: "#39A76A", fillOpacity: 0.25, weight: 3 }).addTo(mapObj);
+  boundary.forEach((c) => L.circleMarker(c, { radius: 3, color: "#075E36", fillColor: "#fff", fillOpacity: 1 }).addTo(mapObj));
+  mapObj.fitBounds(polygon.getBounds(), { padding: [20, 20], maxZoom: 17 });
+  if (path === "/route") drawRoute(p);
 }
 
 function locateMe() {
