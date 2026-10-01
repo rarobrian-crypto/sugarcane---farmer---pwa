@@ -215,8 +215,12 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
         `SELECT "Parcel_ID" FROM parcels WHERE "Grower_ID" = $1 ORDER BY "Parcel_ID"`,
         [req.farmer.growerId]
       );
+      const clientPreview = Boolean(
+        process.env.CLIENT_PREVIEW_GROWER_ID &&
+        String(farmerResult.rows[0]?.grower_id || "") === String(process.env.CLIENT_PREVIEW_GROWER_ID)
+      );
       if (parcelsResult.rows.length === 0) {
-        return res.json({ farmer: farmerResult.rows[0], parcel: null, parcels: [] });
+        return res.json({ farmer: farmerResult.rows[0], parcel: null, parcels: [], client_preview: clientPreview });
       }
       // MVP: this customer app is built for a single-parcel farmer.
       // If a grower has several parcels, the first is shown by
@@ -225,7 +229,8 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
       res.json({
         farmer: farmerResult.rows[0],
         parcel: toClientParcel(primary),
-        parcels: parcelsResult.rows.map((r) => r.Parcel_ID)
+        parcels: parcelsResult.rows.map((r) => r.Parcel_ID),
+        client_preview: clientPreview
       });
     } catch (err) {
       console.error(err);
