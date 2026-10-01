@@ -4,6 +4,10 @@ One line per deploy — what changed and why, so future-you (or anyone
 else) doesn't have to reconstruct it from commit messages.
 
 ## Unreleased
+- **Customer farm preview**: add a public, phone-sized client showcase at
+  `/client-farm-demo.html` with the supplied surveyed boundaries,
+  corrected Ngelechom outline, and OpenStreetMap/satellite map layers.
+  Keep the farmer portal available from its login and add a direct preview link.
 - Restructured `server.js` (1,500 lines) into `lib/` (auth, migrations,
   parcel status) and `routes/` (growers, parcels, ndvi, route-analysis,
   staff-auth) modules. No behavior change — same endpoints, same

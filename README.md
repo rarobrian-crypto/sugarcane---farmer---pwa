@@ -90,6 +90,13 @@ with no backend running), every screen quietly falls back to realistic
 demo data — matching what you described wanting to show a customer
 before the backend is even live.
 
+## Customer farm preview
+
+After deployment, share `/client-farm-demo.html` for the phone-sized
+farm showcase. This page is intentionally public and displays the
+customer-supplied surveyed boundaries. The farmer portal remains at
+`/farmer/login.html`.
+
 ## Adding new parcels
 
 Farmers can add a parcel from `#/add-parcel` (also reachable from the

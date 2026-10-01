@@ -58,7 +58,7 @@ function getSession(req) {
 // page, its assets, and the entirely-separate farmer PWA
 // (/farmer/*) reachable without a staff session.
 function requireAuth(req, res, next) {
-  const openPaths = ["/login.html", "/login", "/logout", "/session"];
+  const openPaths = ["/login.html", "/login", "/logout", "/session", "/client-farm-demo.html"];
   if (openPaths.includes(req.path)) return next();
 
   if (
