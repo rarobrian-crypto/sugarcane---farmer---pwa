@@ -44,7 +44,7 @@ async function api(path, opts = {}) {
 async function loadFarmerData() {
   const me = await api("/farmer/api/me");
   state.farmer = me?.farmer || DEMO.farmer;
-  if (me?.farmer && new URLSearchParams(location.search).get("client-preview") === "1" && typeof CLIENT_FARM_DATA !== "undefined") {
+  if (me?.farmer && (me.client_preview === true || new URLSearchParams(location.search).get("client-preview") === "1") && typeof CLIENT_FARM_DATA !== "undefined") {
     state.clientFarmDemo = true;
     state.parcels = CLIENT_FARM_DATA.parcels;
     state.parcel = CLIENT_FARM_DATA.parcelDetails["Makina"];
