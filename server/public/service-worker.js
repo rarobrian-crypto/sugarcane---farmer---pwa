@@ -3,11 +3,11 @@
 // no signal in the field), and lets GET data requests fall back
 // to the last-known copy when offline.
 
-const CACHE_VERSION = "farmer-app-v7-landsan-dashboard";
+const CACHE_VERSION = "farmer-app-v8-landsan-dashboard";
 const APP_SHELL = [
   "/farmer/index.html",
-  "/farmer/css/app.css?v=lands-dashboard-7",
-  "/farmer/js/app.js?v=lands-dashboard-7",
+  "/farmer/css/app.css?v=lands-dashboard-8",
+  "/farmer/js/app.js?v=lands-dashboard-8",
   "/farmer/js/demo-data.js",
   "/manifest.json",
   "/icons/icon-192.png",
