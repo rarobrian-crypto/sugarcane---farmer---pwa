@@ -1,5 +1,6 @@
 const PARCEL_SELECT_FIELDS = (statusSql, cropAgeSql, harvestStatusSql) => `
 "Parcel_ID",
+"Parcel_Name",
 "Grower_ID",
 "Area_Ha",
 "Variety",
@@ -17,6 +18,7 @@ ST_AsGeoJSON(ST_Transform(geometry,4326))::json AS geometry
 function toProperties(row) {
   return {
     Parcel_ID: row.Parcel_ID,
+    Parcel_Name: row.Parcel_Name || row.Parcel_ID,
     Grower_ID: row.Grower_ID,
     Area_Ha: row.Area_Ha,
     Variety: row.Variety,
@@ -35,7 +37,7 @@ module.exports = function attachParcelsRoutes(app, pool, shared) {
   const { STATUS_SQL, CROP_AGE_SQL, HARVEST_STATUS_SQL, computeInitialStatus, requirePermission } = shared;
   const fields = PARCEL_SELECT_FIELDS(STATUS_SQL, CROP_AGE_SQL, HARVEST_STATUS_SQL);
 
-  app.get("/parcels", async (req, res) => {
+  app.get("/parcels", requirePermission("view_parcels"), async (req, res) => {
     try {
       const result = await pool.query(`SELECT ${fields} FROM parcels ORDER BY "Parcel_ID";`);
       res.json({
@@ -52,7 +54,7 @@ module.exports = function attachParcelsRoutes(app, pool, shared) {
     }
   });
 
-  app.get("/parcel/:id", async (req, res) => {
+  app.get("/parcel/:id", requirePermission("view_parcels"), async (req, res) => {
     try {
       const result = await pool.query(
         `SELECT ${fields} FROM parcels WHERE "Parcel_ID"=$1;`,
@@ -86,10 +88,10 @@ module.exports = function attachParcelsRoutes(app, pool, shared) {
 
       await pool.query(
         `INSERT INTO parcels
-          ("Parcel_ID","Grower_ID","Variety","Status","Area_Ha","Planting_Date","Harvest_Due","Ratoon_Cycle","Yield_t_ha","Estimated_Tonnage",geometry)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, ST_SetSRID(ST_GeomFromGeoJSON($11),4326))`,
+          ("Parcel_ID","Parcel_Name","Grower_ID","Variety","Status","Area_Ha","Planting_Date","Harvest_Due","Ratoon_Cycle","Yield_t_ha","Estimated_Tonnage",geometry)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, ST_SetSRID(ST_GeomFromGeoJSON($12),4326))`,
         [
-          p.parcel_id, p.grower_id, p.variety, initialStatus, p.area,
+          p.parcel_id, p.parcel_name || p.parcel_id, p.grower_id, p.variety, initialStatus, p.area,
           p.planting_date || null, p.harvest_due || null, p.ratoon_cycle || null,
           p.yield_t_ha || null, p.estimated_tonnage || null, JSON.stringify(geojson)
         ]
