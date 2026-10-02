@@ -1,5 +1,5 @@
 module.exports = function attachGrowersRoutes(app, pool, { requirePermission }) {
-  app.get("/growers", async (req, res) => {
+  app.get("/growers", requirePermission("view_growers"), async (req, res) => {
     try {
       const result = await pool.query(`SELECT * FROM growers ORDER BY grower_id;`);
       res.json(result.rows);
