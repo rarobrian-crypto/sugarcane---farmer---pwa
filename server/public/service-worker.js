@@ -1,14 +1,12 @@
 // Sugarcane GIS — Farmer PWA service worker
-// Caches the app shell so it opens instantly (and works with
-// no signal in the field), and lets GET data requests fall back
-// to the last-known copy when offline.
+// Caches only the public app shell. Personalized farmer API responses
+// are network-only so accounts on a shared phone cannot see each other's farms.
 
-const CACHE_VERSION = "farmer-app-v8-landsan-dashboard";
+const CACHE_VERSION = "farmer-app-v9-private-farms";
 const APP_SHELL = [
   "/farmer/index.html",
-  "/farmer/css/app.css?v=lands-dashboard-8",
-  "/farmer/js/app.js?v=lands-dashboard-8",
-  "/farmer/js/demo-data.js",
+  "/farmer/css/app.css?v=lands-dashboard-9",
+  "/farmer/js/app.js?v=lands-dashboard-9",
   "/manifest.json",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
@@ -46,19 +44,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Farmer API data (/farmer/api/...): network-first, cache fallback for offline viewing
-  if (request.url.includes("/farmer/api/")) {
-    event.respondWith(
-      fetch(request)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-          return res;
-        })
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
+
 });
 
 // Push notifications (harvest due, alerts) — requires the backend
