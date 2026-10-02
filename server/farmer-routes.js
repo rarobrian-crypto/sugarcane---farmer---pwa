@@ -95,7 +95,7 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
   async function getParcelForFarmer(parcelId, growerId) {
     const result = await pool.query(
       `SELECT
-        "Parcel_ID","Grower_ID","Area_Ha","Variety","Planting_Date","Harvest_Due",
+        "Parcel_ID","Parcel_Name","Grower_ID","Area_Ha","Variety","Planting_Date","Harvest_Due",
         ${STATUS_SQL}, ${CROP_AGE_SQL}, ${HARVEST_STATUS_SQL},
         "Ratoon_Cycle","Yield_t_ha","Estimated_Tonnage",
         "Land_Surveyed","Survey_Date","Survey_Notes",
@@ -113,6 +113,7 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
     const ring = (row.geometry?.coordinates?.[0] || []).slice(0, -1); // drop closing point
     return {
       Parcel_ID: row.Parcel_ID,
+      Parcel_Name: row.Parcel_Name || row.Parcel_ID,
       Grower_ID: row.Grower_ID,
       Area_Ha: row.Area_Ha,
       Variety: row.Variety,
@@ -215,12 +216,8 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
         `SELECT "Parcel_ID" FROM parcels WHERE "Grower_ID" = $1 ORDER BY "Parcel_ID"`,
         [req.farmer.growerId]
       );
-      const clientPreview = Boolean(
-        process.env.CLIENT_PREVIEW_GROWER_ID &&
-        String(farmerResult.rows[0]?.grower_id || "") === String(process.env.CLIENT_PREVIEW_GROWER_ID)
-      );
       if (parcelsResult.rows.length === 0) {
-        return res.json({ farmer: farmerResult.rows[0], parcel: null, parcels: [], client_preview: clientPreview });
+        return res.json({ farmer: farmerResult.rows[0], parcel: null, parcels: [] });
       }
       // MVP: this customer app is built for a single-parcel farmer.
       // If a grower has several parcels, the first is shown by
@@ -229,8 +226,7 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
       res.json({
         farmer: farmerResult.rows[0],
         parcel: toClientParcel(primary),
-        parcels: parcelsResult.rows.map((r) => r.Parcel_ID),
-        client_preview: clientPreview
+        parcels: parcelsResult.rows.map((r) => r.Parcel_ID)
       });
     } catch (err) {
       console.error(err);
@@ -242,7 +238,7 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
   app.get("/farmer/api/parcels", requireFarmerAuth, async (req, res) => {
     try {
       const result = await pool.query(
-        `SELECT "Parcel_ID","Variety","Area_Ha",${STATUS_SQL}
+        `SELECT "Parcel_ID","Parcel_Name","Variety","Area_Ha",${STATUS_SQL}
          FROM parcels WHERE "Grower_ID" = $1 ORDER BY "Parcel_ID"`,
         [req.farmer.growerId]
       );
@@ -269,54 +265,111 @@ module.exports = function attachFarmerRoutes(app, pool, shared) {
   // Station survey file — the client always sends the same shape
   // ([lat,lng] pairs) regardless of source, tagged with how it was made.
   app.post("/farmer/api/parcel", requireFarmerAuth, async (req, res) => {
+    let client;
     try {
+      client = await pool.connect();
       const { variety, planting_date, boundary, boundary_source } = req.body;
-      let { parcel_id } = req.body;
+      const coordinateCrs = req.body.coordinate_crs || "EPSG:4326";
+      let parcelId = String(req.body.parcel_id || "").trim();
+      const parcelName = String(req.body.parcel_name || "").trim();
 
       if (!Array.isArray(boundary) || boundary.length < 3) {
         return res.status(400).json({ success: false, error: "A boundary needs at least 3 points." });
       }
-      const validSources = ["gps_walk", "manual_draw", "imported_survey"];
-      if (!validSources.includes(boundary_source)) {
+      if (!["EPSG:4326", "EPSG:32636"].includes(coordinateCrs)) {
+        return res.status(400).json({ success: false, error: "Use WGS84 latitude/longitude or UTM Zone 36N / WGS84." });
+      }
+      if (!["gps_walk", "manual_draw", "imported_survey"].includes(boundary_source)) {
         return res.status(400).json({ success: false, error: "Invalid boundary source." });
       }
 
-      if (!parcel_id) {
+      const points = boundary.map((point) => {
+        if (!Array.isArray(point) || point.length < 2) return null;
+        const first = Number(point[0]);
+        const second = Number(point[1]);
+        if (!Number.isFinite(first) || !Number.isFinite(second)) return null;
+        if (coordinateCrs === "EPSG:32636") {
+          if (first < 100000 || first > 900000 || second < 0 || second > 10000000) return null;
+          return [first, second];
+        }
+        const lat = first;
+        const lng = second;
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+        return [lng, lat];
+      });
+      if (points.some((point) => !point)) {
+        return res.status(400).json({ success: false, error: "Boundary coordinates are invalid for the selected coordinate system." });
+      }
+
+      const samePoint = (left, right) => left[0] === right[0] && left[1] === right[1];
+      if (points.length > 3 && samePoint(points[0], points[points.length - 1])) points.pop();
+      if (new Set(points.map((point) => point.join(","))).size < 3) {
+        return res.status(400).json({ success: false, error: "A boundary needs at least 3 distinct points." });
+      }
+      if (!parcelId && parcelName) {
+        const slug = parcelName.normalize("NFKD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-zA-Z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 72);
+        if (!slug) return res.status(400).json({ success: false, error: "Enter a parcel name using letters or numbers." });
+        parcelId = String(req.farmer.growerId) + "-" + slug;
+      }
+      if (!parcelId) {
         const countResult = await pool.query(
-          `SELECT COUNT(*)::int AS n FROM parcels WHERE "Grower_ID" = $1`,
+          'SELECT COUNT(*)::int AS n FROM parcels WHERE "Grower_ID" = $1',
           [req.farmer.growerId]
         );
-        parcel_id = `${req.farmer.growerId}-P${countResult.rows[0].n + 1}`;
+        parcelId = String(req.farmer.growerId) + "-P" + String(countResult.rows[0].n + 1);
       }
-      const exists = await pool.query(`SELECT 1 FROM parcels WHERE "Parcel_ID" = $1`, [parcel_id]);
+      if (parcelId.length > 120 || parcelName.length > 120) {
+        return res.status(400).json({ success: false, error: "Parcel name is too long." });
+      }
+      const exists = await pool.query('SELECT 1 FROM parcels WHERE "Parcel_ID" = $1', [parcelId]);
       if (exists.rowCount > 0) {
-        return res.status(400).json({ success: false, error: `Parcel ID ${parcel_id} already exists.` });
+        return res.status(409).json({ success: false, error: "Parcel " + parcelId + " already exists. Choose a different parcel name." });
       }
 
-      const ring = boundary.map((pt) => [pt[1], pt[0]]); // [lat,lng] -> [lng,lat]
-      ring.push(ring[0]);
+      const ring = [...points, points[0]];
       const geojson = { type: "Polygon", coordinates: [ring] };
+      const srid = coordinateCrs === "EPSG:32636" ? 32636 : 4326;
+      const geometryInput = JSON.stringify(geojson);
+      const validation = await client.query(
+        "SELECT ST_IsValid(g) AS is_valid, ST_IsValidReason(g) AS reason, " +
+        "ST_Area(ST_Transform(g,4326)::geography) AS area_m2 " +
+        "FROM (SELECT ST_SetSRID(ST_GeomFromGeoJSON($1),$2) AS g) candidate",
+        [geometryInput, srid]
+      );
+      const shape = validation.rows[0];
+      if (!shape?.is_valid) {
+        return res.status(400).json({ success: false, error: "The supplied boundary is not a valid polygon: " + (shape?.reason || "invalid geometry") });
+      }
+      const areaHa = Number(shape.area_m2) / 10000;
+      if (!Number.isFinite(areaHa) || areaHa <= 0) {
+        return res.status(400).json({ success: false, error: "The supplied boundary has no measurable area." });
+      }
+
       const initialStatus = computeInitialStatus(planting_date, null);
-
-      await pool.query(
-        `INSERT INTO parcels
-          ("Parcel_ID","Grower_ID","Variety","Status","Planting_Date","Boundary_Source",geometry)
-         VALUES ($1,$2,$3,$4,$5,$6, ST_SetSRID(ST_GeomFromGeoJSON($7),4326))`,
-        [parcel_id, req.farmer.growerId, variety || null, initialStatus, planting_date || null, boundary_source, JSON.stringify(geojson)]
+      await client.query("BEGIN");
+      await client.query(
+        'INSERT INTO parcels ("Parcel_ID","Parcel_Name","Grower_ID","Variety","Status","Planting_Date","Boundary_Source","Land_Surveyed","Survey_Notes","Area_Ha",geometry) ' +
+        'VALUES ($1,$2,$3,$4,$5,$6,$7,TRUE,$8,$9,ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON($10),$11),4326))',
+        [
+          parcelId, parcelName || parcelId, req.farmer.growerId, variety || null, initialStatus, planting_date || null,
+          boundary_source, "Survey boundary imported from " + coordinateCrs + "; supplied point order retained.",
+          Number(areaHa.toFixed(2)), geometryInput, srid
+        ]
       );
+      await client.query("COMMIT");
 
-      // Area is computed from the real geometry, not estimated client-side.
-      const areaResult = await pool.query(
-        `UPDATE parcels SET "Area_Ha" = ROUND((ST_Area(geometry::geography) / 10000)::numeric, 2)
-         WHERE "Parcel_ID" = $1 RETURNING "Area_Ha"`,
-        [parcel_id]
-      );
-
-      const p = await getParcelForFarmer(parcel_id, req.farmer.growerId);
-      res.json({ success: true, parcel: toClientParcel(p), area_ha: areaResult.rows[0].Area_Ha });
+      const parcel = await getParcelForFarmer(parcelId, req.farmer.growerId);
+      res.json({ success: true, parcel: toClientParcel(parcel), area_ha: Number(areaHa.toFixed(2)) });
     } catch (err) {
+      if (client) { try { await client.query("ROLLBACK"); } catch (_) {} }
       console.error(err);
       res.status(500).json({ success: false, error: err.message });
+    } finally {
+      if (client) client.release();
     }
   });
 
